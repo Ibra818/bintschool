@@ -53,9 +53,7 @@
         object-fit: cover;
     }
 
-    #blockpage .container-left .block:nth-child(4) img, #blockpage .container-right .block:nth-child(4) img{
-
-    }
+    #blockpage .container-left .block:nth-child(4) img, #blockpage .container-right .block:nth-child(4) img{}
 
     #blockpage .container-left .block:nth-child(4), #blockpage .container-right .block:nth-child(1){
         border: 4px solid rgba(194, 194, 194, 0.26);
