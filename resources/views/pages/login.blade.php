@@ -5,6 +5,7 @@
         --primary:rgba(5,7,21,255);
         --border: #222430;
         --block: rgb(17, 18, 32);
+        --secondary: #1B1B1B;
     }
     #blockpage{
         width: 100%;
@@ -16,6 +17,7 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: space-evenly;
         padding: 0 5% 0 5%;
     }
 
@@ -53,7 +55,7 @@
         object-fit: cover;
     }
 
-    #blockpage .container-left .block:nth-child(4) img, #blockpage .container-right .block:nth-child(4) img{}
+    /* #blockpage .container-left .block:nth-child(4) img, #blockpage .container-right .block:nth-child(4) img{} */
 
     #blockpage .container-left .block:nth-child(4), #blockpage .container-right .block:nth-child(1){
         border: 4px solid rgba(194, 194, 194, 0.26);
@@ -67,11 +69,12 @@
         max-height: 100%;
         overflow: hidden;
         display: flex;
-        padding: 5% 0 0% 0;
+        padding-top: 5%;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         position: relative;
+        top:0;
     }
 
     .overlay .logo{
@@ -85,7 +88,6 @@
     }
 
     .overlay .login, .overlay .register, #forgotten-pass.active{
-        height:65%;
         max-height:65%;
         background-color: var(--primary);
         position: absolute;
@@ -99,19 +101,26 @@
 
     .overlay .login{
         text-align:center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         width: 100%;
+        height:100%;
         z-index: 1;
-        opacity: 1;
-        transform: translateY(0%);
         transition: all .5s ease;
     }
     .overlay .register{
         height:100%;
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         text-align:center;
         z-index: 2;
         width: 100%;
-        transform: translateY(0%);
-        transition: all .5s ease;
+        transform: translateX(0);
+        transition: transform .5s ease;
     }
 
     .overlay h1{
@@ -124,12 +133,13 @@
     .overlay .login form, .register form{
         display:flex;
         border-radius: 15px;
-        padding: 2.5% 10% 2.5% 10%;
-        margin: 0 0 0 20%;
+        padding: 2.5% 10% 2.5% 7%;
+        align-items: center;
         flex-direction:column;
         width: 60%;
         max-width:60%;
         justify-content: center;
+        align-items: center;
         overflow: hidden;
         background-color: var(--block);
     }
@@ -146,9 +156,9 @@
     }
 
     .overlay .register.active{
-        opacity: 0;
-        transform: translateY(100%);
-        transition: all 0.5s ease-out;
+        margin:0;
+        transform: translateX(-100%);
+        transition: transform 0.5s ease-out;
     }
     .overlay form .btns{
         text-align: center;
@@ -218,11 +228,13 @@
         overflow:hidden;
     }
     #message .close-msg{
+        display:flex;
+        justify-content: center;
+        align-items: center;
         font-weight:600;
         font-size:1em;
         width:30%;
         height:3vh;
-        padding: 1% 0 10% 0;
         margin: 0 0 1% 0;
         border-radius:5px;
         background-color: transparent;
@@ -252,6 +264,25 @@
         transition:all .5s ease;
     }
 
+    #message.success .success.active h4{
+        width: 100%;
+        font-size: 2em;
+        font-weight: 500;
+        gap: 5%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #message.success .success.active h4 svg{
+        height: 90%;
+        width:50px;
+        padding: 1% 2% 2% 2%;
+        border-radius: 50%;
+        fill: white;
+        background-color: greenyellow;
+    }
+
     #message.error .success, #message.success .error{
         width: 0;
         height:0;
@@ -264,7 +295,7 @@
     
     #message.error .error.active{
         /*  red:  #a91d1dff*/
-        background-color: var(--block) ; 
+        background-color: var(--secondary) ; 
         box-shadow: 0 0 10px 0 #ffffff15;
         height:20%;
         width: 20%;
@@ -283,6 +314,25 @@
         left:40%;
         z-index: 100;
         transition:all .5s ease;
+    }
+
+    #message.error .error.active h4{
+        width: 100%;
+        font-size: 2em;
+        font-weight: 500;
+        gap: 5%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #message.error .error.active h4 svg{
+        height: 90%;
+        width:40px;
+        padding: 1% 2% 2% 2%;
+        border-radius: 50%;
+        fill: white;
+        background-color: red;
     }
 
     #message.error .error.active .error-msg{
@@ -318,18 +368,19 @@
     }
 
     #loader-overlay.active .loader.active{
-        background-color: var(--primary);
+        background-color: var(--secondary);
         color:white;
-        font-size: 1em;
+        font-size: 1.4em;
         font-weight: 600;
         text-align:center;
         width:15%;
         height: 20%;
         z-index: 16;
         border-radius:5px;
-        padding: 1% 0 2% 0;
-        position:relative;
-
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     @keyframes spinner{
@@ -341,45 +392,44 @@
         }
     }
     #loader-overlay.active .spinner{
-        width:50%;
+        width:60%;
         height:90%;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        flex-direction:column;
-        margin: 2% 0 0 25%;
-        animation: spinner .5s ease-out infinite;
-        position:relative;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+       
+        animation: spinner .7s ease-out infinite;
+    }
+
+    #loader-overlay.active .spinner .vertical, #loader-overlay.active .spinner .horizontal{
+        position:absolute;
+    }
+    #loader-overlay.active .spinner .horizontal{
+        width: 70%;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #loader-overlay.active .spinner .vertical{
+        height: 70%;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: space-between;
     }
     #loader-overlay.active .loader.active .spinner .top, #loader-overlay.active .loader.active .spinner .left, #loader-overlay.active .loader.active .spinner .right, #loader-overlay.active .loader.active .spinner .bottom{
-        width:10px;
-        height:10px;
+        width:20px;
+        height:20px;
         border-radius: 100px;
         background-color: white;
     }
 
-    #loader-overlay.active .loader.active .spinner .top{
-        position:absolute;
-        top:5%;
-        left: 48%;
-    }
 
-    #loader-overlay.active .loader.active .spinner .left{
-        position:absolute;
-        top:45%;
-        left: 10%;
-    }
-    #loader-overlay.active .loader.active .spinner .bottom{
-        position:absolute;
-        bottom: 5%;
-        left:48%;
-    }
-
-    #loader-overlay.active .loader.active .spinner .right{
-        position:absolute;
-        right:10%;
-        top: 45%;
-    }
 
     #forgotten-pass{
         width: 0;
@@ -657,6 +707,9 @@
         const spanRestorePass = document.querySelector('#restore-pass p .useremail');
         const restoreText = document.querySelector('#restore-pass p');
         
+        window.addEventListener('resize', ()=>{
+            console.log('resized')
+        });
         goBackBtn.addEventListener('click', (e)=>{
             e.preventDefault();
             loaderOverlay.classList.remove('active');
@@ -1076,13 +1129,25 @@
 </section>
 <section id="message">
     <div class="success">
-        <h4>Réussi</h4>
+        <h4>
+            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-check-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
+            </svg>
+            Réussi
+        </h4>
         <div class="success-msg"></div>
         <button class="close-msg">fermer</button>
     </div>
 
     <div class="error">
-        <h4>Error</h4>
+        <h4>
+            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z"/>
+                <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+            </svg>
+            Erreur
+        </h4>
         <div class="error-msg"></div>
         <button class="close-msg">fermer</button>
     </div>
@@ -1091,10 +1156,16 @@
     <div class="loader">
         Veuillez patienter...
         <div class="spinner">
-            <div class="top"></div>
-            <div class="left"></div>
-            <div class="right"></div>
-            <div class="bottom"></div>
+            <div class="vertical">
+                <div class="top"></div>
+                <div class="bottom"></div>
+            </div>
+
+            <div class="horizontal">
+                <div class="left"></div>
+                <div class="right"></div>
+            </div>
+            
         </div>
     </div>
 

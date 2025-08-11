@@ -94,3 +94,7 @@ Route::post('/resetPassword', function(Request $request){
     }
     
 });
+
+Route::delete('del-user', function(Request $request){
+    $user = auth() -> user();
+});
