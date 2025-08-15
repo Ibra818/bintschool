@@ -1,2018 +1,7 @@
 @extends('index')
 
 @section('content')
-    <style>
-        :root{
-            --primary:rgba(5,7,21,255);
-            --border: #222430;
-            --block: rgba(27, 29, 50, 1);
-            --lite: rgba(197, 199, 222, 1);
-            --secondary: #1B1B1B;
-            --graylite: #353535ff;
-            --green: #5ede50ff;
-        }
-        html,body{
-            height:100%;
-        }
-
-        main{
-            position:fixed;
-            top:0;
-            height:100%;
-        }
-
-        #blockpage{
-            display:flex;
-            position:relative;
-            flex: 10;
-        }
-
-        nav{
-            position:sticky;
-            background-color: var(--primary);
-            color: white;
-            height:100%;
-            width:20%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            align-items: space-evenly;
-            padding: 0 0 1% 0;
-            color: var(--lite); 
-            min-height:100%;
-            flex:2;
-        }
-        
-        nav img{
-            width: 60%;
-            margin: 0 0 0 10%;
-        }
-
-        nav .pages{
-            height: 70%;
-        }
-        nav ul{
-            color: orange;
-            height:100%;
-            display:flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-
-        nav ul li{
-            color: var(--lite);
-            background-color: var(--border);
-            height: 8%;
-            width:85%;
-            font-weight: 500;
-            font-size: 1.15em;
-            display:flex;
-            justify-content: flex-start;
-            align-items: center;
-            border-radius:10px;
-            padding: 0 0 0 5%;
-            margin: 5% 0 2% 0;
-            cursor:pointer;
-            list-style-type: none;
-            position:relative;
-            transition: all .5s ease;
-            
-        }
-
-        nav ul li.forma-suivie svg{
-            fill:transparent;
-            stroke:white;
-        }
-
-        nav ul li.active{
-            padding: 0 0 0 10%;
-            color:orange;
-            border:1px solid orange;
-            transition: all .5s ease;
-        }
-
-        nav ul li.active::before{
-            content: '';
-            position:absolute;
-            left: 5%;
-            width: 5px;
-            height: 5px;
-            border-radius: 50px;
-            background-color:orange;
-        }
-
-        nav ul li svg{
-            width:25px;
-            height:25px;
-            fill:white;
-            stroke:transparent;
-            margin: 0 5% 0 0;
-        }
-
-        #logout{
-            margin: 0 5% 0 5%;
-            padding: 0 0 0 5%;
-            border-radius: 10px;
-            background-color: var(--block);
-            height: 5vh;
-            color: var(--lite);
-            border:none;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            gap: 5%;
-            font-size: 1.1em;
-        }
-
-        #logout svg{
-            width: 30px;
-            height:30px;
-            fill: var(--lite);
-        }
-
-        #home{
-            display:flex;
-            background-color: var(--secondary);
-            flex:10;
-            z-index: 2;
-            padding: 0% 0 2% 0;
-        }
-
-        #home #categories ul{
-            color: orange;
-            display:flex;
-            flex-direction: column;
-            justify-content: space-between;
-            width:90%;
-            height:100%;
-            padding: 10% 0 5% 5%;
-            overflow-y: scroll;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-            scrollbar-width:none;
-        }
-
-        #categories ul li{
-            width:100%;
-            color: #797979ff;
-            list-style-type: none;
-            cursor:pointer;
-            margin: 0 0 0 10%;
-            position: relative;
-        }
-
-        #categories ul li.active{
-            color: white;
-        }
-
-        #home #categories ul li.active::before{
-            background-color:orange;
-            transition: background-color .5s ease;
-            width:10px;
-            height:20px;
-        }
-        
-        #home #categories ul li::before{
-            content: '';
-            transition: background-color .5s ease;
-            position: absolute;
-            left:-10%;;
-            border-radius: 10px;
-            margin: 0 20% 0 0;
-            width:10px;
-            height:20px;
-            background-color:white;
-        }
-
-        #categories{
-            flex:2;
-            overflow: hidden;
-        }
-
-
-        #home aside{
-            flex:3;
-            display:flex;
-            flex-direction: column;
-            justify-content:space-between;
-            align-items: center;
-        }
-
-        #home aside .search{
-            width: 85%;;
-            display:flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 5% 0 0 0;
-        }
-
-        #home aside .search .input-container{
-            display:flex;
-            justify-content:space-around;
-            align-items:center;
-            border-radius:15px;
-            width: 73%;
-            height: 6vh;
-            padding: 0 0 0 4%;
-            border:2px solid #8a8a8aff;
-        }
-
-        #home aside .search .input-container input{
-            background-color: var(--secondary);
-            border:none;
-            width:80%;
-            height:90%;
-            color:white;
-        }
-
-        #home aside .search .input-container input:focus{
-            outline:none;
-            color:white;
-        }
-
-        #home aside .search .btn-search{
-            height:100%;
-            border-radius: 10px;
-            font-weight:400;
-            background-color: orange;
-        }
-
-        #home aside .search .input-container svg{
-            fill:white;
-            width:25px;
-            height:25px;
-        }
-
-        #suggestions{
-            height:100%;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 5%;
-            align-items: center;
-            overflow-y: scroll;
-            overflow-x: hidden;
-            margin: 5% 0 0 0;
-            scrollbar-width:none;
-            scroll-behavior: smooth;
-        }
-
-        #suggestions .video{
-            width: 40%;
-            height:45%;
-            border-radius: 10px;
-            border: 1px solid white;
-            margin: 0 0 3% 0;
-            position:relative;
-        }
-
-        #suggestions .video svg{
-            fill:white;
-            height:50px;
-            width:50px;
-            position:absolute;
-            top:40%;
-            left:35%;
-            z-index: 2;
-        }
-
-        #content{
-            overflow-y: scroll;
-            scrollbar-width:none;
-            scroll-behavior: smooth;
-            padding: 1% 0 0 0;
-            flex:3;
-        }
-
-        #content .content-item{
-            position:relative;
-        }
-
-        #content .content-item .text, #content .content-item video{
-            position:absolute;
-        }
-        #content .content-item{
-            width: 100%;
-            height:90%;
-            border-radius: 20px;
-            overflow: hidden;
-            margin: 5% 0 0 0;
-        }
-
-        #content .content-item .text{
-            background: linear-gradient(to top, var(--primary), transparent);
-            color:white;
-            z-index:2;
-            height:35%;
-            width: 100%;
-            bottom:10%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            
-        }
-        
-        #content .content-item video{
-            width:100%;
-            height:90%;
-            object-fit:cover;
-        }
-
-        #content .content-item .text .user{
-            height: 25%;
-            width: 80%;
-            display:flex;
-            flex-direction: row;
-            gap:5%;
-            justify-content: flex-start;
-            align-items: center;
-            margin: 0 0 1% 5%;
-        }
-
-        #content .content-item .text .user .btn-follow{
-            font-size: 1.1em;
-        }
-
-        #content .content-item .text .user button{
-            border:none;
-            opacity: .7;
-            padding: 1% 2% 1% 2%;
-            border-radius: 5px;
-            background-color:white;
-        }
-
-        #content .content-item .text .user .info{
-            max-height: 100%;
-            display:flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            align-items: center;
-        }
-        #content .content-item .text .user img{
-            width: 15%;
-            height:100%;
-            object-fit:cover;
-            border-radius:50px;
-        }
-
-        #content .content-item .text p{
-            max-height:5vh;
-            max-width:85%;
-            padding: 0 0 0 5%;
-            overflow:hidden;
-            font-size: .8em;
-        }
-
-        #content .content-item .text .btns{
-            width: 40%;
-            height:20%;
-            max-width:40%;
-            max-height:20%;
-            display:flex;
-            flex-direction: row;
-            justify-content: space-around;
-            align-items: center;
-            margin: 0 0 0 55%;
-        }
-
-        #content .content-item .text .btns button{
-            width: 30%;
-            height:90%;
-            max-height:90%;
-            backdrop-filter:  blur(1px);
-            background-color:transparent;
-            border:none;
-        }
-
-        #content .content-item .text .btns button svg{
-            fill:white;
-            width:25px;
-            height:25px;
-        }
-
-        #content .content-item .text .btns button::before{
-            background-color:white;
-            opacity: 0.5;
-            content: '';
-        }
-
-
-        #content .content-item .text .more{
-            max-height: 30%;
-            position:absolute;
-            bottom: 0;
-            display:flex;
-            justify-content: space-around;
-            align-items: center
-        }
-
-        #content .content-item .text .more p{
-            max-width: 50%;
-            overflow:hidden;
-            margin: 2% 0 2% 0;
-            padding: 0 0 0 0;
-        }
-
-        #content .content-item .text .more button{
-            background-color:orange;
-            border:none;
-            width:20%;
-            height: 5vh;
-            border-radius: 5px;
-            color:black;
-        }
-
-        #content .content-item .pause svg{
-            position:absolute;
-            top:35%;
-            left:40%;
-            fill:white;
-            width:100px;
-            height:100px;
-            
-        }
-
-        #content .content-item .pause.active{
-            opacity: 1;
-            transition: opacity .5s ease;
-        }
-
-        #content .content-item .pause.unactive{
-            opacity: 0;
-            transition: opacity .5s ease;
-        }
-
-        #profile, #home, #cour-details{
-            height:100%;
-            position: absolute;
-        }
-
-        #profile{
-            color:white;
-            background-color: var(--secondary);
-            width: 0%;
-            padding: 5% 10% 0 10%;
-            transform: translateX(110%);
-            transition: transform .5s ease;
-            overflow-y: scroll;
-            scroll-behavior: smooth;
-            scrollbar-width:none;
-        }
-
-        #profile.active{
-            width: 100%;
-            z-index:5;
-            transform: translateX(0);
-            transition: transform .5s ease;
-        }
-
-
-        #profile .user{
-            height: 70%;
-            max-height:70%;
-            position:relative;
-            padding: 0 0 5% 0;
-            border-bottom: 2px solid gray;
-        }
-
-        #profile .user .cover{
-            height:35vh;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        #profile .user .cover img{
-            height:100%;
-            width:100%;
-            object-fit:cover;
-        }
-
-        #profile .user .user-profile{
-            display:flex;
-            justify-content: space-between;
-            height:55%;
-            position:absolute;
-            bottom: 1%;
-        }
-
-        #profile .user .user-profile .user-info{
-            display:flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height:100%;
-            padding: 0 0 0 3%;
-            flex:3;
-        }
-
-        #profile .user .user-profile .user-info img{
-            border:5px solid white;
-            height:40%;
-            width:20%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        #profile .user .user-profile .user-info p{
-            overflow:hidden;
-            max-height:5vh;
-            width:65%;
-        }
-
-        #profile .user .user-profile .followers{
-            font-size:1.1em;
-            font-weight:500;
-            width: 100%;
-            height:5vh;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-        }
-
-        #profile .user .user-profile .followers span{
-            color: gray;
-        }
-
-        #profile .user .user-profile .btns{
-            flex:2;
-            display:flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #profile .user .user-profile .btns button{
-            border:none;
-            width:30%;
-            height:15%;
-            font-size:1em;
-            font-weight:500;
-            border-radius:5px;
-        }
-
-        #profile .complete-profil{
-            height:40%;
-            display:flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: space-between;
-            padding: 2% 0 5% 0;
-            border-bottom: 2px solid gray;
-        }
-
-
-        #profile .complete-profil .block1, #profile .complete-profil .block2 {
-            display:flex;
-            justify-content: space-between;
-            align-items:center;
-            padding: 0% 1% 0 1%;
-        }
-
-        #profile .complete-profil .block1, #profile .complete-profil .block2 .block2-item{
-            width:50%;
-            height:100%;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        #profile .complete-profil .block1{
-            height:70%;
-            width:100%;
-            border-radius: 20px;
-            margin: 0 0 2% 0;
-            padding: 1% 1% 1% 1%;
-            background-color: var(--graylite);
-        }
-
-        #profile .complete-profil .block1 .congratulations{
-            border:1px solid gray;
-            padding: 1% 0 0 0;
-            height:100%;
-            width: 25%;
-            text-align:center;
-            border-radius:15px;
-        }
-
-        #profile .complete-profil .block1 .congratulations h4{
-            font-size: 1em;
-            width: 100%;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-        }
-
-        #profile .complete-profil .block1 .congratulations p{
-            font-size: .8em;
-        }
-
-        #profile .complete-profil .block1 .congratulations svg{
-            height:40px;
-            width:40px;
-            fill:white;
-            border-radius:100px;
-            background-color: var(--green);
-            box-shadow: rgba(0, 0, 0, 1);
-         }
-
-        #profile .complete-profil .block2{
-            border: 5px solid #4285F4;
-            background-color: #4481e42b;
-            border-radius: 20px;
-            height:35%;
-            position:relative;
-        }
-
-
-        #profile .complete-profil .block2 svg{
-            height:50px;
-            width:50px;
-            fill: #4285F4;
-        }
-
-        #profile .complete-profil .block2 .send-link{
-            width: 80%;
-            padding: 1% 0 0 0;
-            display:flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #profile .complete-profil .block2 .send-link h4{
-            font-size: 1.1em;
-        }
-
-        #profile .complete-profil .block2 .send-link .link-mail{
-            display:flex;
-            justify-content: space-around;
-            width:90%;
-        }
-
-        #profile .complete-profil .block2 .send-link a{
-            color: orange;
-        }
-
-        #profile .complete-profil .block2 button{
-            height:70%;
-            border: none;
-            font-size: 1em;
-            font-weight:500;
-            border-radius: 10px;
-        }
-
-        #profile .complete-profil .percentage{
-           width: 8%;
-           height:10vh;
-           border-radius: 100px;
-           background: conic-gradient(var(--green) 80%, black 20%);;
-           display:flex;
-           justify-content: center;
-           align-items: center;
-        }
-
-        #profile .complete-profil .percentage::before{
-           content: '90%';
-           font-size: 1.2em;
-           display: flex;
-           justify-content: center;
-           align-items: center;
-           padding: 10%;
-           height:80%;
-           width:80%;
-           border-radius: 50%;
-           background-color: var(--secondary);
-        }
-
-        #profile .complete-profil .block1 .checkboxs{
-            width: 65%;
-            height:100%;
-            gap: 10%;
-            display:flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        #profile .complete-profil .block1 .checkboxs h2{
-            width:100%;
-            padding: 0 0 0 5%;
-            font-size:1.5em;
-        }
-
-        #profile .complete-profil .block1 .checkboxs .checks{
-            display:flex;
-            width:100%;
-            gap:1%;
-        }
-
-        #profile .complete-profil .block1 .checkboxs .checks .check-item{
-            display:flex;
-            width:33%;
-            justify-content: space-evenly;
-            align-items: center;
-            font-size:.8em;
-        }
-
-        #profile .complete-profil .block1 .checkboxs .checks .check{
-            width: 30px;
-            height:30px;
-            margin: 0 1% 0 0;
-            display:flex;
-            justify-content: flex-start;
-            background-color: var(--green);
-            border-radius:50px;
-        }
-
-        #profile .complete-profil .block1 .checkboxs .checks .check svg{
-            height:100%;
-            width:100%;
-            fill: green;
-        }
-
-        #profile .complete-profil .center .checks-profil .checkboxs{
-            display:flex;
-        }
-
-        #cours{
-            width: 100%;
-            margin: 2% 0 0 0;
-            display:flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        #cours .items{
-            width:100%;
-            height:30vh;
-            display: flex;
-            align-items:Center;
-            flex-wrap: wrap;
-            gap: 5%;
-        }
-
-        #cours ul{
-            display: flex;
-            justify-content: space-between;
-            align-items:center;
-            width:60%;
-        }
-
-        #cours ul li{
-            font-size: 1.1em;
-            font-weight: 500;
-            list-style-type: none;
-            text-align:center;
-            height: 4vh;
-            width:30%;
-            cursor: pointer;
-            padding: 1% 0 0 0;
-            background-color: transparent;
-            transition: backgroun-color .5s ease;
-        }
-
-        #cours ul li.active{
-            border-radius: 15px;
-            background-color: var(--graylite);
-            transition: backgroun-color .5s ease-out;
-        }
-
-        #cours .cour{
-            display:flex;
-            justify-content: space-around;
-            align-items: center;
-            width: 45%;
-            height:12vh;
-            cursor: pointer;
-            border-radius: 20px;
-            background-color: var(--graylite);
-            margin: 5% 0 0 0;
-            padding: 0 0 0 1%;
-        }
-
-        #cours .cour img{
-            flex:2;
-            height:80%;
-            border-radius: 10px;
-            object-fit: cover;
-        }
-
-        #cours .cour .text{
-            flex:6;
-            display:flex;
-            flex-direction: column;
-            justify-content: space-around;
-        }
-
-        #cours .cour .text h4{
-            width:100%;
-            padding: 0 0 0 5%;
-        }
-
-        #cours .cour .text .meta-info{
-            display:flex;
-            justify-content: space-around;
-            align-items: flex-end;
-            width: 100%;
-            color: gray;
-        }
-
-        #cours .cour .text .meta-info .hour{
-            box-shadow: 0 0 10px 0 rgba(0, 0, 0, .5);
-            text-align:center;
-            width:20%;
-            border-radius: 50px;
-        }
-
-        #cours .cour .text .meta-info .cour-cate{
-            width:20%;
-            text-align: center;
-            border-radius: 50px;
-            box-shadow: 0 0 10px 0 rgba(0, 0, 0, .5);
-        }
-
-        #cours .cour .text .meta-info .publisher{
-            box-shadow: 0 0 10px 0 rgba(0, 0, 0, .5);
-            border-radius: 50px;
-            display:flex;
-        }
-
-        #cours .cour .text .meta-info .publisher img{
-            width:30%;
-            height:10%;
-            border-radius: 100px;
-            object-fit:cover;
-        }
-
-        #inputs{
-            width:0;
-            height:0;
-        }
-
-        #profile-pic, #cover-pic{
-            display:none;
-        }
-
-        #overlay{
-            height:0;
-            width:0;
-            z-index: -1;
-            transition: height .5s ease;
-            overflow: hidden;
-            z-index: 1000000;
-        }
-
-        #overlay.active{
-            position:fixed;
-            top:0;
-            height:100%;
-            width: 100%;
-            z-index: 6;
-            background-color: rgba(0, 0, 0, .5);
-            transition: height .5s ease;
-            display: flex;
-            justify-content: flex-end;
-            padding: 0 17% 0 0;
-        }
-
-        #overlay.del-acc{
-            position:fixed;
-            top:0;
-            height:100%;
-            width: 100%;
-            padding: 0 25% 0 0;
-            background-color: rgba(0, 0, 0, .7);
-            transition: height .5s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #params{
-            width: 0;
-            height:0; overflow: hidden;
-        }
-
-        #params.active{
-            height:100%;
-            width:30%;
-            transform: translateX(110%);
-            transition: transform .5s ease;
-            background-color: var(--secondary);
-        }
-
-        #params.active .body{
-            width: 100%;
-            height:100%;
-            position:relative;
-        }
-
-        #params.active .body .btns, #params .body .del-reasons{
-            position:absolute;
-        }
-
-        .del-reasons{
-            width: 0%;
-            height: 0%;
-            z-index: 0;
-            overflow: hidden;
-            display:flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items:center;
-            transform: translateX(110%);
-            transition: transform .5s ease-out;
-        }
-        
-
-        #params.active .body .del-reasons.active{
-            width: 100%;
-            height: 90%;
-            max-height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            background-color: var(--secondary);
-            color: white;
-            transform: translateX(0%);
-            z-index: 2;
-            transition: transform .5s ease-out;
-        }
-
-        #params.active .body .del-reasons.active p, #params .body .del-reasons.active h3{
-            width: 100%;
-            display:flex;
-            justify-content: flex-start;
-        }
-
-        #params.active .body .del-reasons.active p{
-            color:gray;
-        }
-
-        #params.active .body .del-reasons.active form{
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items:center;
-            width:100%;
-        }
-
-        #params.active .body .del-reasons.active form label{
-            width: 100%;
-            margin: 0 0 2% 0;
-            padding: 0 0 0 3%;
-            display: flex;
-            justify-content: flex-start;
-        }
-
-        #params.active .body .del-reasons.active form textarea{
-            border:none;
-            height: 20vh;
-            width:95%;
-            color: white;
-            border-radius: 10px;
-            border: 2px solid gray;
-            background-color: transparent;
-        }
-
-        #params.active .body .del-reasons.active form textarea:focus{
-            outline: none;
-        }
-
-         #params.active .body .del-reasons.active .foot{
-            width:100%;
-            height: 10%;
-            border-top: 2px solid var(--graylite);
-            display:flex;
-            justify-content: space-around;
-            align-items:center;
-            padding: 15% 0 0 0;
-            margin: 60% 0 0 0;
-         }
-
-        #params.active .body .del-reasons.active .foot button{
-            width: 45%;
-            height:5vh;
-            border:none;
-            border-radius: 10px;
-        }
-
-        #params.active .body .del-reasons.active .foot button:nth-child(1){
-            background-color: var(--graylite);
-            color: white;
-        }
-
-        #params.active .body .del-reasons.active .foot button:nth-child(2){
-            background-color: white;
-            color: black;
-        }
-
-        #params.active{
-            height:100%;
-            width:40%;
-            padding: 0 0 0 2%;
-            background-color: var(--secondary);
-            transform: translateX(0);
-            transition: transform .5s ease;
-        }
-
-        #params.active .param-head{
-            width:100%;
-            height:8%;
-            color:white;
-            border-bottom: 1px solid var(--graylite);
-            display:flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 0 0 5% 0;
-            transition: width .5s ease;
-            position: relative;
-        }
-        
-
-        #params.active .param-head .par-head-block1{
-            width:100%;
-            height:100%;
-            color:white;
-            display:flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #params.active .param-head.active .par-head-block1{
-            width:0%;
-            height:0%;
-            z-index: -1;
-            overflow:hidden;
-        }
-
-        #params.active .param-head .par-head-block2{
-            z-index: -1;
-            width:0%;
-            height:0%;
-            overflow: hidden;
-            background-color: var(--secondary);
-            transform: translateX(110%);
-        }
-        
-
-        #params.active .param-head .par-head-block1, #params.active .param-head .par-head-block2{
-            position: absolute;
-        }
-
-        #params.active .param-head .par-head-block1{
-            z-index: 1;
-        }
-
-        #params.active .param-head.active .par-head-block2{
-            width:100%;
-            height:100%;
-            z-index: 2;
-            color:white;
-            display:flex;
-            justify-content: space-between;
-            align-items: center;
-            transform: translateX(0%);
-            transition: transform .5s ease;
-        }
-
-        #params.active .param-head.active .par-head-block2{
-
-        }
-    
-
-        #params.active .param-head .par-head-block1 .btn-close-param{
-            background-color: var(--graylite);
-            border-radius: 50%;
-            width:10%;
-            height:60%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border:none;
-        }
-
-        #params.active .param-head.active .bi.bi-chevron-left{
-            height:30px;
-            width: 30px;
-            fill: white;
-            border-radius: 50%;
-            background-color: var(--graylite);
-
-        }
-
-        #params.active .param-head .btn-close-param svg{
-            height:100%;
-            width:85%;
-            fill:white;
-        }
-
-        #params.active .btns{
-            height: 100%;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content:flex-start;
-            align-items: center;
-            gap: 5%;
-
-        }
-        #params.active .btns .info-perso .btn-info-perso, #params.active .btns .ctn-dev-forma .btn-dev-forma, #params.active .btns .ctn-del-acc .btn-del-acc{
-            width: 95%;
-            height: 100%;
-            max-height:100%;
-            color: white;
-            border:none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: 400;
-            background: var(--graylite);
-            transform: height .5s ease-out;
-        }
-
-        #params.active .btns .info-perso.active .btn-info-perso,  #params.active .btns .ctn-dev-forma .btn-dev-forma, #params.active .btns .ctn-del-acc .btn-del-acc{
-            width: 95%;
-            height: 5vh;
-            max-height:5vh;
-            color: white;
-            border:none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 10px;
-            font-size: 1.1em;
-            background: var(--graylite);
-            transform: height .5s ease-out;
-        }
-
-        #params.active .btns .info-perso form{
-            width: 0;
-            height: 0;
-            overflow: hidden;
-        }
-        #params.active .btns button svg{
-            height:25px;
-            width: 25px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 15px;
-            fill:white;
-        }
-
-        #params.active .btns .info-perso{
-            width:100%;
-            height: 5vh;
-            max-height: 5vh;
-            transition: height .5s ease-out;
-        }
-        #params.active .btns .info-perso.active{
-            height: 40%;
-            max-height: 50%;
-            transition: height .5s ease-out;
-        }
-
-        #params.active .btns .info-perso .btn-info-perso svg{
-            transform: rotate(90deg);
-            transition: transform .5s ease;
-        }
-
-        #params.active .btns .info-perso.active button svg{
-            transform: rotate(-90deg);
-            transition: transform .5s ease;
-        }
-
-        #params.active .btns .info-perso.active form{
-            height: 100%;
-            width:100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            align-items: center;
-        }
-
-        #params.active .btns .info-perso.active form button{
-            width:30%;
-            height:5vh;
-            font-size: 1.1em;
-            font-weight: 500;
-            color:white;
-            border:none;
-            border-radius: 10px;
-            margin: 0 0 5% 0;
-            background-color: orange;
-        }
-
-
-        #params.active .btns .info-perso.active form .ctn-input{
-            border:0px solid white;
-            background-color: var(--graylite);
-            display: flex;
-            justify-content: space-between;
-            padding: 0 0 0 2%;
-            align-items: center;
-            height:15%;
-            width: 80%;
-            border-radius: 15px;
-        }
-
-        #params.active .btns .info-perso.active form .ctn-input input::placeholder{
-            color:white;
-            text-align: center;
-        }
-
-        #params.active .btns .info-perso.active form .ctn-input input{
-            border:none;
-            color:white;
-            width: 90%;
-            height: 100%;
-            padding: 0 0 0 2%;
-            background-color: transparent;
-        }
-
-        #params.active .btns .info-perso.active form .ctn-input input:focus{
-            outline: none;
-        }
-
-        #params.active .btns .info-perso.active form .ctn-input svg{
-            width:30px;
-            height: 30px;
-            fill: white;
-        }
-
-        #params.active .btns .ctn-dev-forma , #params .btns .ctn-del-acc{
-            height:5vh;
-            width: 100%;
-        }
-
-        @keyframes fadeInUp{
-            from{translateY(-100%); }
-            to{translateY(0%); opacity:1;}
-        }
-
-        #del-acc-msg{
-            width: 0;
-            height:0;
-            overflow: hidden;
-        }
-
-        #del-acc-msg.active{
-            width: 400px;
-            height:400px;
-            border-radius: 20px;
-            z-index: 1000;
-            display:flex;
-            gap: 1%;
-            flex-direction:column;
-            justify-content: space-evenly;
-            align-items:space-around;
-            padding: 1% 2% 0 2%;
-            background-color: var(--secondary);
-            animation: fadeInUp .5s ease-out;
-        }
-
-        #del-acc-msg.active .del-acc-head{
-            width: 100%;;
-            display:flex;
-            flex-direction: column;
-            justify-content:space-around;
-            align-items:flex-start;
-            color:white;
-        }
-
-        #del-acc-msg.active .del-acc-head svg{
-            height:40px;
-            width: 40px;
-            fill : white;
-            display:flex;
-            margin: 0 0 1% 0;
-            justify-content:Center;
-            align-items:center;
-            border-radius: 50%;
-            background-color: red;
-        }
-
-
-        #del-acc-msg.active form{
-            width:100%;
-            height: 45%;
-            gap: 5%;
-            display:flex;
-            flex-direction: column;
-            justify-content:space-between;
-            align-items:space-around;
-        }
-
-        #del-acc-msg.active label{
-            color:white;
-        }
-
-        #del-acc-msg.active input{
-            border:none;
-            height: 5vh;
-            max-height: 5vh;
-            width:100%;
-            border-radius: 10px;
-            border: 2px solid var(--graylite);
-            background-color: transparent;
-        }
-
-        #del-acc-msg.active input:focus{
-            outline:none;
-            color:white;
-        }
-
-        #del-acc-msg.active .btn-del-acc-msg{
-            width: 100%;
-            height: 5vh;
-            border:none;
-            color:white;
-            border-radius: 10px;
-            background-color: #da2525ff;;
-        }
-
-        .btn-del-acc-return{
-            width:100%;
-            z-index:2; 
-            height: 100%; 
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            gap: 5%;
-            border: none;
-            color: white;
-            background-color: var(--secondary);
-        }
-
-        #switch-acc{
-            width:0;
-            height:0;
-            overflow: hidden;
-            transition: height .5s ease-out;
-        }
-
-        #switch-acc.active{
-            width: 400px;
-            height:500px;
-            border-radius: 20px;
-            z-index: 1000;
-            display:flex;
-            gap: 1%;
-            flex-direction:column;
-            justify-content: space-evenly;
-            align-items:space-around;
-            padding: 1% 2% 0 2%;
-            background-color: var(--secondary);
-            animation: fadeInUp .5s ease-out;
-            color:white;
-        }
-
-        #switch-acc.active .switch-acc-head{
-            display:flex;
-            flex-direction:column;
-            justify-content: space-around;
-            align-items: center;
-        }
-        #switch-acc.active .switch-acc-head p{
-            color: gray;
-        }
-
-        #switch-acc.active .switch-acc-advantages{
-            background-color: #47bf2f28;
-            display:flex;
-            flex-direction: column;
-            justify-content: space-around;
-            align-items: space-around;
-            border-radius: 20px;
-        }
-
-        #switch-acc.active .switch-acc-advantages h4{
-            width: 100%;
-            color: white;
-            display:flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        #switch-acc.active .switch-acc-advantages .advantage-item{
-            display:flex;
-            justify-content: justify;
-            align-items: space-evenly;
-            color: var(--green);
-        }
-        #switch-acc.active .switch-acc-advantages .advantage-item svg{
-            fill: var(--green);
-            height:30px;
-            width: 30px;
-            display:flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #switch-acc.active .switch-acc-btn-ctn{
-            width: 100%;
-            height:5vh;
-            color:var(--secondary);
-            display:flex;
-            justify-content: center;
-            align-items: center;
-            border:none;
-            border-radius: 20px;
-            background-color: orange
-        }
-
-        #cour-details{
-            width: 0;
-            height:0;
-            transform: translateX(110%);
-            overflow: hidden;
-            transition: width .5s ease-out;
-        }
-        #cour-details.active{
-            width: 100%;
-            height:100%;
-            z-index: 10;
-            display:flex;
-            align-items: space-around;
-            background-color: var(--secondary);
-            transform: translateX(0);
-            transition: transform .5s ease-out;
-            position: relative;
-        }
-
-        #cour-details.active .cour-detail-body, #cour-details.active #sell-cour-detail-overlay{
-            position: absolute;
-        }
-
-        #cour-details.active .cour-detail-body{
-            width: 100%;
-            height:100%;
-            display:flex;
-            z-index: 11;
-            align-items: space-around;
-            background-color: var(--secondary);
-            transform: translateX(0);
-            transition: transform .5s ease-out;
-        }
-
-        #cour-details .container-left{
-            width: 25%;
-            display:flex;
-            flex-direction: column;
-            justify-content: justify;
-            align-items: center;
-            padding:2% 0 0 0;
-        }
-        #cour-details.active .container-left button{
-            color:white;
-            width: 75px;
-            height: 3vh;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border: 1px solid gray;
-            border-radius: 10px;
-            background-color: var(--graylite);
-        }
-
-        #cour-details.active .container-left button svg{
-            height:90%;
-            width: 30%;
-            fill: white;
-        }
-        #cour-details.active .container-right{
-            overflow-y: scroll;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            padding:5% 0 0 0;
-            display: flex;
-            justify-content: space-around;
-            align-items: center
-        }
-        #cour-details.active .container-right .cdtls-block1{
-            width: 45%;
-            height: 100%;
-            display:flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-        }
-        #cour-details.active .container-right .cdtls-block1 img{
-            width: 90%;
-            height:60%;
-            border-radius: 20px;
-            object-fit: cover;
-        }
-        #cour-details.active .container-right .cdtls-block2{
-            color: white;
-            height:100%;
-            padding: 0 0 0 2%;
-            overflow-y: scroll;
-            scrollbar-width: none;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-intro .cour-cat{
-            color: gray;
-            width: 20%;
-            display: flex;
-            justify-content: space-around;
-        }
-
-         #cour-details.active .container-right .cdtls-block2 .cour-intro{
-            width: 90%;
-            height: 50%;
-            display:flex;
-            flex-direction: column;
-            justify-content: space-around;
-            align-items: space-around;
-            margin: 0 0 5% 0;
-            border-bottom: 2px solid gray;
-         }
-
-          #cour-details.active .container-right .cdtls-block2 .cour-intro .stars{
-            border: 1px solid orange;
-            height:3vh;
-            width: 25%;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            overflow: hidden;
-          }
-
-          #cour-details.active .container-right .cdtls-block2 .cour-intro .stars svg{
-            width: calc(100%/5);
-            height: 90%;
-            fill: orange;
-          }
-
-          #cour-details.active .container-right .cdtls-block2 .cour-intro .cour-reactions{
-            width:35%;
-            height: 6vh;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-          }
-
-          #cour-details.active .container-right .cdtls-block2 .cour-intro .cour-reactions button{
-            border:1px solid white;;
-            height:100%;
-            width: 27%;
-            border: none;
-            border-radius: 15px;
-            background-color: var(--graylite);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-
-          #cour-details.active .container-right .cdtls-block2 .cour-intro .cour-reactions svg{
-            height: 60%;
-            width: 60%;
-            fill: white;
-          }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-intro .cour-formateur{
-           width: 55%;
-           height: 20%;
-           display:flex;
-           justify-content: space-between;
-           align-items: center;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-intro .cour-formateur .formateur-info{
-            height:90%;
-            width: 100%;
-            display:flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-intro .cour-formateur .formateur-info .visiter{
-            display:flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-intro .cour-formateur .formateur-info .visiter svg{
-            fill: white;
-            width: 25px;
-            height: 90%;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-intro .cour-formateur img{
-            width: 17%;
-            height:100%;
-            object-fit: cover;
-            border-radius: 50%;
-            border:1px solid white;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-intro .cour-formateur .formateur-info .formateur{
-            display:flex;
-            flex-direction: column;
-            justify-content: space-around;
-            align-items: justify;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-intro .cour-formateur button{
-            border: 1px solid gray;
-            color: white;
-            width: 20%;
-            border-radius: 10px;
-            background-color: var(--graylite);
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-intro .cour-formateur button svg{}
-
-        /* #cour-details.active .container-right .cdtls-block2 .cour-body{} */
-        #cour-details.active .container-right .cdtls-block2 .cour-body .a-propos{
-            border-bottom: 2px solid gray;
-            padding: 0 0 5% 0;
-            width: 90%;
-            height: 40%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            align-items: flex-start;
-
-        }
-        #cour-details.active .container-right .cdtls-block2 .cour-body .a-propos h3 {
-            color: white;
-            margin: 0 0 2% 0;
-            font-size: 1.6em;
-            font-weight: 500;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .a-propos p{
-            color: gray;
-            width: 90%;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .a-propos .acces{
-            display: flex;
-            height: 5%;
-            border: 1px solid var(--green);
-            width: 20%;
-            border-radius: 10px;
-            justify-content: space-between;
-            align-items: center;
-            border: none;
-            background-color: transparent;
-            color: white;
-            color: var(--green);
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .a-propos .acces svg{
-            fill: var(--green);
-            height: 30px;
-            width: 30%;
-        }
-        #cour-details.active .container-right .cdtls-block2 .cour-body .btns{
-            display:flex;
-            justify-content: space-around;
-            align-items: center;
-            height: 6vh;
-            width:90%;
-            margin: 2% 0 2% 0;
-        }
-        #cour-details.active .container-right .cdtls-block2 .cour-body .btns button{
-            border:none;
-            width: 30%;
-            height: 95%;
-            border-radius: 15px;
-            background-color: var(--graylite);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 1.2em;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .btns button svg{
-            width: 25%;
-            height: 60%;
-            fill: orange;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .btns button:nth-child(1) svg{
-            rotate: 45deg;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-chapters{
-            margin: 5% 0 0 0;   
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-chapters h3{
-            color: white;
-            margin: 0 0 2% 0;
-            font-size: 1.5em;
-            font-weight: 500;
-        }
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-chapters .chapters-items{
-            display: flex;
-            flex-direction: column;
-            align-items: space-around;
-        }
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-chapters .chapters-items .item {
-            max-width: 90%;
-            height:5vh;
-            padding: 0 0 0 2%;
-            margin: 1% 0 1% 0;
-            color: var(--green);
-            display: flex;
-            gap: 1.5%;
-            justify-content: justify;
-            align-items: center;
-            font-size: 1.2em;
-        }
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-chapters .chapters-items .item button{
-            border:none;
-            height: 80%;
-            width: 5%;
-            border-radius: 10px;
-            background-color: var(--green);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-chapters .chapters-items .item button svg{
-            fill: green;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-content{
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            padding: 0 0 0 2%;
-            margin: 5% 0 0 0; 
-            width: 90%;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-content .part{
-            color: gray;
-            font-size: 1.1em;
-            margin: 2% 0 2% 0;
-            width: 100%;
-        }
-
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-content .content-items{
-            color: white;
-            margin: 2% 0 0 0;
-        }
-        
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-content .content-items .item{
-            height: 6vh;
-            width: 100%;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-content .content-items .item div{
-            width: 100%;
-            height: 100%;
-            border-bottom: 1px solid gray;
-            display:flex;
-            justify-content: baseline;
-            align-items: center;
-            border-radius: 10px;
-            background-color: var(--graylite);
-            gap: 10%;
-            padding: 0 0 0 2%;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-content .content-items .item div svg:nth-child(2){
-            margin: 0 0 0 55%;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-content .content-items .item button{
-            border-radius: 10px;
-            height: 60%;
-            width: 5%;
-            border: none;
-            background-color: var(--secondary);
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .cour-content .content-items .item button svg{
-            fill: white;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .public-cible{
-            padding: 0 0 0 5%;
-            margin: 5% 0 2% 0;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .public-cible h3{
-            font-size: 1.5em;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .public-cible ul{
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-
-        }
-        #cour-details.active .container-right .cdtls-block2 .cour-body .pre-requis{
-            padding: 0 0 2% 5%;
-            margin: 2% 0 2% 0;
-        }
-
-        #cour-details.active .container-right .cdtls-block2 .cour-body .pre-requis h3{
-            font-size: 1.5em;
-            padding: 2% 0 1% 0;
-        }
-        #cour-details.active .container-right .cdtls-block2 .cour-body .btn-buy-cour{
-            border:none;
-            width: 80%;
-            color: black;
-            font-size: 1.2em;
-            display:flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 500;
-            height: 5vh;
-            border-radius: 15px;
-            background-color: orange;
-            margin: 0 0 10% 10%;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay{
-            width: 0;
-            height: 0;
-            z-index: 12;
-            overflow: hidden;
-            background-color: var(--secondary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active{
-            width: 100%;
-            height: 100%;
-            transition: height .5s ease-out;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps{
-            border: 1px solid white;
-            position: relative;
-            height: 100%;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-         }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1{
-            position: absolute;
-            width: 40%;
-            height: 50%;
-            color: white;
-            background-color: #434343ff;
-            overflow: hidden;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-around;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .head{
-            width: 90%;
-            height: 30%;
-            display: flex;
-            border-radius : 10px;
-            justify-content: space-around;
-            align-items: center;
-            background-color: var(--graylite);
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .head .block1{
-            width: 25%;
-            height: 90%;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .head .block1 img{
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .head .block2{
-            width: 70%;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .head .block2 .cour-price{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid gray;
-            width: 90%;
-            height: 50%;
-            color: gray;
-            font-size: 1.1em;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .head .block2 .cour-price .price{
-            color: white;
-            font-size: 1.2em;
-            font-weight: 600;
-        }
-
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .head .block2 .validite{
-            display: flex;
-            justify-content: space-between;
-            width:90%;
-            font-size: 1.2em;
-            color: gray;
-
-        }
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .head .block2 .validite button{
-            border: none;
-            background: transparent;
-            color: var(--green); 
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .payment-methods{
-            display: fleX;
-            flex-direction: column;
-            justify-content: center;
-            width: 90%;
-            height: 30%;
-            padding: 2% 0 0 0;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .payment-methods .btns{
-            width: 100%;
-            height: 80%;
-            margin: 2% 0 0 0;
-            display: flex;
-            justify-content: space-around;
-            
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .payment-methods button{
-            background-color: var(--green);
-            width: 45%;
-            height: 5vh;
-            border-radius: 15px;
-            display:flex;
-            justify-content: center;
-            align-items: center;
-            border: none;
-        }
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .payment-methods .card-payment{}
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .payment-methods .mobile-money{}
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .poursuivre{
-            width: 90%;
-            background-color: orange;
-            color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 15px;
-            height: 6vh;
-            font-size: 1.2em;
-
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .payment-methods form{
-            width: 90%;
-            border: 1px solid white;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .payment-methods form .ctn-card-name{}
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .payment-methods form .ctn-card-number{}
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .payment-methods form label{
-            color: white;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .payment-methods form input{
-            width: 100%;
-            border: none;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .payment-methods form::placeholder{
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #cour-details.active #sell-cour-detail-overlay.active .sell-cour-steps .step1 .payment-methods form input:focus{
-            outline: none;
-        }
-
-        #card-payment{}
-
-        #mobile-payement{}
-
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
 
     <script>
 
@@ -2024,8 +13,10 @@
             const profilePage = document.querySelector('#profile');
             const profileLink = document.querySelector('nav ul li.profile-link');
             const pourToi = document.querySelector('nav ul li.pour-toi');
-            const messagerie = document.querySelector('nav ul li.messagerie');
-            const formaSuivie = document.querySelector('nav ul li.forma-suivie');
+            const messagerieLink = document.querySelector('nav ul li.messagerie-link');
+            const messagerie = document.querySelector('#messagerie');
+            const formaSuivieLink = document.querySelector('nav ul li.forma-suivie');
+            const formaSuivie = document.querySelector('#formation-suivie');
             const btnParam = document.querySelector('#profile .user .user-profile .btns .param');
             const btnShare = document.querySelector('#profile .user .user-profile .btns .profile-share');
             const btnChangeCover = document.querySelector('#profile .user .user-profile .btns .change-cover');
@@ -2053,9 +44,118 @@
             const btnContinuDelAcc = document.querySelector('#params .del-reasons .foot .btn-continue-del-acc');
             const sellCourOverlay = document.querySelector('#cour-details #sell-cour-detail-overlay');
             const btnBuyCour = document.querySelector('#cour-details .cour-detail-body .btn-buy-cour');
-            const btnCardPay = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .step1 .payment-methods .btns .card-payement');
-            const btnMobilePay = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .payment-methods .btns .mobile-money');
-            console.log(btnCardPay, btnMobilePay)
+            const btnCardPay = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .payment-methods .btns .btn-card-payement');
+            const btnMobilePay = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .payment-methods .btns .btn-mobile-money');
+            const mobilePayment = document.querySelector('#mobile-payment');
+            const pay = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .step1 .btn-pay');
+            const btnRetourSellCour = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .btn-retour');
+            const sellCourStep1 = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .step1');
+            const sellCourStep2 = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .step2');
+            const BtnSellStartCour = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .step2 .btn-start-cour');
+            const courList = document.querySelector('#formation-suivie .forma-cour-list');
+            const courGrid = document.querySelector('#formation-suivie .forma-cour-grid');
+            const courListItem = document.querySelector('#formation-suivie .forma-cour-list .list-item');
+            const btnFormaList = document.querySelector('#formation-suivie .btns .btn-table-view');
+            const btnFormaGrid = document.querySelector('#formation-suivie .btns .btn-grid-view');
+            const cardPay = document.querySelector('#card-payment');
+            const mobPay = document.querySelector('#mobile-payment');
+            
+            // Éléments de la messagerie
+            let messagerieInitialized = false;
+            let contactItems;
+            let messageInput;
+            let sendButton;
+
+            btnFormaGrid.addEventListener('click', (e)=>{
+                e.preventDefault();
+                btnFormaGrid.classList.add('active');
+                btnFormaList.classList.remove('active');
+                if(courGrid.classList.contains('active')) return;
+                if(courList.classList.contains('active')) courList.classList.remove('active');
+                courGrid.classList.add('active');
+            });
+
+
+            btnFormaList.addEventListener('click', (e)=>{
+                e.preventDefault();
+                btnFormaList.classList.add('active');
+                btnFormaGrid.classList.remove('active');
+                console.log(courGrid.classList.contains('active'));
+                if(courList.classList.contains('active')) return;
+                if(courGrid.classList.contains('active')) courGrid.classList.remove('active');
+                courList.classList.add('active');
+            });
+
+            btnRetourSellCour.addEventListener('click', (e)=> {
+                e.preventDefault();
+                if(sellCourStep2.classList.contains('active')){
+                    sellCourStep2.classList.remove('active');
+                }else{
+                    e.currentTarget.parentNode.parentNode.classList.remove('active');
+                }
+                
+            });
+
+
+            // Pay a cour 
+
+            pay.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                const token = " {{ csrf_token() }} ";
+                const data = new FormData(mobilePayment);
+                const number = data.get('indicatif') + data.get('mobile-num');
+                const code = data.get('code0') + data.get('code1') + data.get('code2') + data.get('code3');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/pay-cour',
+                    headers: {
+                        'X-CSRF-TOKEN': token,
+                        'Content-Type': 'application/json',
+                    },
+                    data: JSON.stringify({
+                        number: number,
+                        code: code,
+                    }),
+
+                    success: function(response){
+                        sellCourStep1.classList.remove('active')
+                        sellCourStep2.classList.add('active');
+                        console.log(response);
+                    },
+
+                    error: function(error){
+                        console.log('error');
+                    }
+                });
+            });
+
+            
+            // 
+
+            btnMobilePay.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.currentTarget.style.cssText += 'color: orange; border:2px solid orange; transition: color .5s ease;';
+                btnCardPay.style.cssText += 'color: white; border:none; transition: all .5s ease-out;';
+                console.log('mobile pay clicked');
+                if(mobPay.classList.contains('active')){
+                    mobPay.classList.remove('active');
+                }else{
+                    mobPay.classList.add('active');
+                }
+            });
+
+            btnCardPay.addEventListener('click', (e) =>{
+                e.preventDefault();
+                e.currentTarget.style.cssText += 'color: orange; border:2px solid orange; transition: color .5s ease;';
+                btnMobilePay.style.cssText += 'color: white; border:none; transition: all .5s ease-out;';
+                if(cardPay.classList.contains('active')){
+                    cardPay.classList.remove('active');
+                }else{
+                    cardPay.classList.add('active');
+                }
+            });
 
             // Buying a cour process
 
@@ -2113,6 +213,7 @@
                     
                     $.ajax({
                         type: 'DELETE',
+                        timeout: 100000,
                         url: 'del-user',
                         success: function(response){
 
@@ -2205,8 +306,11 @@
                 if(pourToi.classList.contains('active')) return;
                 if(profileLink.classList.contains('active')) profileLink.classList.remove('active');
                 if(profilePage.classList.contains('active')) profilePage.classList.remove('active');
+                if(messagerieLink.classList.contains('active')) messagerieLink.classList.remove('active');
                 if(messagerie.classList.contains('active')) messagerie.classList.remove('active');
+                if(formaSuivieLink.classList.contains('active')) formaSuivieLink.classList.remove('active');
                 if(formaSuivie.classList.contains('active')) formaSuivie.classList.remove('active');
+                
                 pourToi.classList.add('active');
             });
 
@@ -2214,9 +318,190 @@
 
             profileLink.addEventListener('click', (e)=>{
                 e.preventDefault();
-                if(profileLink.classList.contains('active')) return;
+                if(profilePage.classList.contains('active')) return;
+                if(formaSuivieLink.classList.contains('active')) formaSuivieLink.classList.remove('active');
+                if(formaSuivie.classList.contains('active')) formaSuivie.classList.remove('active');
+                if(messagerieLink.classList.contains('active')) messagerieLink.classList.remove('active');
+                if(messagerie.classList.contains('active')) messagerie.classList.remove('active');
                 profilePage.classList.add('active');
-            })
+
+            });
+
+            // Fonction pour initialiser la messagerie
+            function initMessagerieIfNeeded() {
+                if (messagerieInitialized) return;
+                
+                // Récupérer les éléments de la messagerie
+                contactItems = document.querySelectorAll('.contact-item');
+                messageInput = document.getElementById('message-input');
+                sendButton = document.getElementById('send-message');
+                
+                // Ajouter les écouteurs d'événements
+                contactItems.forEach(contact => {
+                    contact.addEventListener('click', handleContactClick);
+                });
+                
+                messageInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+                
+                sendButton.addEventListener('click', sendMessage);
+                
+                // Marquer comme initialisé
+                messagerieInitialized = true;
+            }
+            
+            // Gérer le clic sur un contact
+            function handleContactClick(e) {
+                // Retirer la classe active de tous les contacts
+                contactItems.forEach(c => c.classList.remove('active'));
+                
+                // Ajouter la classe active au contact cliqué
+                this.classList.add('active');
+                
+                // Mettre à jour les informations du contact dans l'en-tête du chat
+                const contactName = this.querySelector('.contact-name').textContent;
+                const contactStatus = this.querySelector('.contact-status').textContent;
+                const contactImage = this.querySelector('img').src;
+                const hasStatusOnline = this.querySelector('.status-online') !== null;
+                
+                document.getElementById('current-chat-name').textContent = contactName;
+                document.getElementById('current-chat-status').textContent = contactStatus;
+                document.getElementById('current-chat-avatar').src = contactImage;
+                
+                const statusOnlineInHeader = document.querySelector('.chat-avatar .status-online');
+                if (hasStatusOnline) {
+                    if (!statusOnlineInHeader) {
+                        const statusSpan = document.createElement('span');
+                        statusSpan.className = 'status-online';
+                        document.querySelector('.chat-avatar').appendChild(statusSpan);
+                    }
+                } else {
+                    if (statusOnlineInHeader) {
+                        statusOnlineInHeader.remove();
+                    }
+                }
+                
+                // Simuler le chargement des messages pour ce contact
+                loadMessages(this.dataset.contact);
+            }
+            
+            // Fonction pour charger les messages d'un contact
+            function loadMessages(contactId) {
+                // Dans une application réelle, vous chargeriez les messages depuis une API
+                // Pour cette démo, on va juste afficher des messages différents selon le contact
+                
+                const messagesContainer = document.getElementById('chat-messages');
+                
+                // Vider les messages existants sauf le premier (qui est l'en-tête "Aujourd'hui")
+                const dayHeader = messagesContainer.querySelector('.message-day');
+                messagesContainer.innerHTML = '';
+                messagesContainer.appendChild(dayHeader);
+                
+                // Ajouter quelques messages selon le contact
+                if (contactId === 'ralph-edwards') {
+                    addMessage('received', 'Bonjour, comment ça va aujourd\'hui ?', '10:30');
+                    addMessage('sent', 'Bonjour Ralph ! Ça va bien, merci. Et toi ?', '10:31 ✓✓');
+                    addMessage('received', 'Très bien ! Je voulais te parler du nouveau projet.', '10:32');
+                    addMessage('sent', 'Bien sûr, je suis tout ouïe.', '10:33 ✓✓');
+                } else if (contactId === 'courtney-henry') {
+                    addMessage('received', 'Salut, as-tu terminé le rapport ?', '09:15');
+                    addMessage('sent', 'Pas encore, je le finis aujourd\'hui.', '09:20 ✓✓');
+                    addMessage('received', 'Super, merci !', '09:21');
+                } else {
+                    addMessage('received', 'Bonjour Cedric', '11:00');
+                    addMessage('sent', 'Bonjour ! Comment puis-je vous aider ?', '11:01 ✓✓');
+                }
+                
+                // Faire défiler jusqu'au dernier message
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            
+            // Fonction pour ajouter un message à la conversation
+            function addMessage(type, content, time) {
+                const messagesContainer = document.getElementById('chat-messages');
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}`;
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                contentDiv.textContent = content;
+                
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'message-time';
+                timeDiv.textContent = time;
+                
+                messageDiv.appendChild(contentDiv);
+                messageDiv.appendChild(timeDiv);
+                
+                messagesContainer.appendChild(messageDiv);
+            }
+            
+            // Fonction pour envoyer un message
+            function sendMessage() {
+                const content = messageInput.value.trim();
+                if (content === '') return;
+                
+                // Ajouter le message à la conversation
+                const now = new Date();
+                const time = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')} ✓✓`;
+                addMessage('sent', content, time);
+                
+                // Vider le champ de saisie
+                messageInput.value = '';
+                
+                // Faire défiler jusqu'au dernier message
+                const messagesContainer = document.getElementById('chat-messages');
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                // Simuler une réponse après un court délai
+                setTimeout(() => {
+                    const responses = [
+                        'D\'accord, je comprends.',
+                        'Merci pour l\'information.',
+                        'Je vais voir ce que je peux faire.',
+                        'Parfait, je reviens vers toi rapidement.',
+                        'C\'est noté !'
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    const responseTime = `${now.getHours()}:${String(now.getMinutes() + 1).padStart(2, '0')}`;
+                    
+                    addMessage('received', randomResponse, responseTime);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 1500);
+            }
+
+            // Show the messagerie page
+            messagerieLink.addEventListener('click', (e)=>{
+                e.preventDefault();
+
+                if(messagerie.classList.contains('active')) return;
+                if(profile.classList.contains('active')) profile.classList.remove('active');
+                if(pourToi.classList.contains('active')) pourToi.classList.remove('active');
+                if(profilePage.classList.contains('active')) profilePage.classList.remove('active');
+                if(formaSuivieLink.classList.contains('active')) formaSuivieLink.classList.remove('active');
+                if(formaSuivie.classList.contains('active')) formaSuivie.classList.remove('active');
+                messagerie.classList.add('active');
+                messagerieLink.classList.add('active');
+                
+                // Initialiser la messagerie si ce n'est pas déjà fait
+                initMessagerieIfNeeded();
+            });
+
+            // Show the formation suivie page
+
+            formaSuivieLink.addEventListener('click', (e)=>{
+                if(formaSuivie.classList.contains('active')) return;
+                if(profile.classList.contains('active')) profile.classList.remove('active');
+                if(pourToi.classList.contains('active')) pourToi.classList.remove('active');
+                if(profilePage.classList.contains('active')) profilePage.classList.remove('active');
+                if(messagerieLink.classList.contains('active')) messagerieLink.classList.remove('active');
+                if(messagerie.classList.contains('active')) messagerie.classList.remove('active');
+                formaSuivie.classList.add('active');
+            });
 
             // Animate the nav element
 
@@ -2285,7 +570,7 @@
                     Profil
                 </li>
 
-                <li class="messagerie">
+                <li class="messagerie-link">
                     <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-chat-left-dots" viewBox="0 0 16 16">
                         <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
                         <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
@@ -3043,8 +1328,8 @@
                 <div id="sell-cour-detail-overlay">
 
                     <div class="sell-cour-steps">
-
-                        <div class="step1">
+                        <button class="btn-retour">Retour</button>
+                        <div class="step1 active">
                             <div class="head">
                                 <div class="block1">
                                     <img src=" {{ asset('images/image2.png') }}" alt="">
@@ -3057,7 +1342,12 @@
                                     </div>
                                     <div class="validite">
                                         <div>Validité : </div>
-                                        <button>Accès à vie</button>
+                                        <button>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                            </svg>
+                                            Accès à vie
+                                        </button>
                                     </div>
                                 </div>
 
@@ -3065,43 +1355,705 @@
 
                             <div class="payment-methods">
                                 <h4>Choisir votre moyen de paiement: </h4>
+
                                 <div class="btns">
-                                    <button class="btn-card-payement">Carte </button>
-                                    <button class="btn-mobile-money"> Mobile money</button>
+                                    <button class="btn-card-payement">Carte 
+                                        <div class="imgs">
+                                            <img src="https://static.vecteezy.com/system/resources/previews/019/167/108/original/mastercard-free-download-free-png.png" alt="">
+                                            <img src="https://cdn.imgbin.com/23/20/16/imgbin-mastercard-visa-payment-american-express-debit-card-italy-visa-u0xvJCG7cPDWPk4UWVHFAwWC1.jpg" alt="">
+                                        </div>
+                                    </button>
+                                    <button class="btn-mobile-money"> Mobile money
+                                        <div class="imgs">
+                                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAA1VBMVEUBAQH///8AAAD/egFPT09eXl5dKxf/fw/5+fn9fA3U1NSioqL8/PwAAAP/ewCQkJBaLw/c3Nzt7e1CQkLW1tabURqmpqb09PRXV1dJSUmAgICXl5fOzs42NjZmZmaysrIbGxswMDDl5eW7u7spKSllZWV4eHgjIyNvb28SEhLCwsKJiYk7OzvmeB6SkpJRJxHwfBoWFhZ8QRi/ZBvNbRpKJxCxYiH3fhVTLxAhDAqiURQqDgY/IhAiDAZfMhHYcRyMShuUTxVJIRLHXhQ8Gg5DJBAuGQ3WgTkxAAAIyElEQVR4nO2aiXbaSBaG0TWKWSQRBBYYsZjFmN24YydtT0/3JJ3M+z/S3FslRCHEMsC0e3L+r08HGYlS/bprFWQyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID/a1w3I//95LjMe8/hf4lLjEs/r0aXfvn0/Pbysyp0M/Q4v/Y87/oz/ZSe6rr0YXmlEInvPZ0EtJ/kpalDuO5jJPDK+/Jr4prtcf5K5N5Zezd1Y26cSV5+fRULbZUFelx6kcL89dvWU7mtV95LJN82cKx9OIGeGrGh3ub5/PLTPzhhboaaawi88rxPppsS2QU10OT2XSQSVffqE6oZpdB9fc7z9K+8+W+0YUKOwY9rgcxnMm/QiQdavINEtuBBgZYVyMyI3vJahvecSJamBSXV/ELGDTqWY+WqzbIMND0kkeKXRPyfrnBcO0KhoxT+M5Zx/bvhhlImlrG6PD+AP1xDoc2fL7fY0es+H3V1zon/oc2jKB7Mv9Ly3X+lsH6EQMuqyK1ermOF/zJuKDEowiKB3tXyN8PExDFY03O85XjvUDcMp9TqVDkoR51mdRJICmqE4d24WGgGAyW3Man26yQXMrOgWejUT9aoHvFhsqLww3WcS27i25HEoOGhHKXfDQMT8afDyDJ9y/LlkZbv+U37rhcNXiRiF27rfMfCx8qhrall9SiOosmpEmmQO0mhoeGDKdC7mv8w0xC11az1cYP9fcYKe+Kv9SZLbQwlDbXY0E6uVhBlTaKJvPR9Dt+yElib9Gti/RMVUvM0G2oRrrsRg+zF85fNDMGWcAaRQvEXOyvjBfVsNmflJCrZkvfiyv6DkuOPu3x+xHJYb5la/A5f1a3pSDlJ4lFG3KFQCfQ804KJvptKlpUzFd6LQnZbGne7rIkGPPe2KJSqO+DHcbewrIJkn6EoLKr8SxTKh05USK3eIX27FZoW1DGYrCM8T2sWKRyJx9bFVVX+zDSCibq3UtggFbTOXUc8kq9uiUL2sJpCZJ+mUDS2i0FxTTg5rFDaMtYiSSYf28+TViDZzHU5nBqk7yMxJZnGl/5IzMJ/F/xUhSSfZIXsqrmI6hk1cZOKf6QN2YJzLy4T2zGoB/dloqqwPfmSSEShCGCXzZVmOo1uKAwjLx3JB/lplx663e7g4eHhMv0Qd+FpLUCKQldWE2Yn4yVjUA84tXSM6ZxmxzbkCOvLu0kbDioSrSyxJwrD6KrWdJq9iEK2YM5KacTTbLgZg56qgykKxUhWuVgKxDW4qhkK2VQqTjcUdvkDjtPvyOVlVU451VR6cc05W2D6OiOh8PotUSb4fxaYPuZTOR6mSWuF0kz1Jurc0FDIfd1Ap76FqofyBNQzPzWVJmaT3VE6tjMNfZx7a4FswW87BEqG0Y7vlyS86k6UaRZyL6fTl6YmVuioGllqlvv1se5pRkpvLbzEsmRHDKbZ8EavJuI1rzd/3LU3IxO/a0/DqZ3R+aZSmem1Q2vYGM7ooVJpUatS4URCmUqlkhnXszO1LNcpipeXjcbo4SLrLrqtpcVgmsKv39YuKjK5VduzNbOxH7J5YCwuVm/d8f2k0Z6IcdfXXUCfJBmTWn+3l/5puCgfLXfE4GnzkPv2O+yc/t1FF8xqcWOQm4U7FV6tj1SZ+HHJ7UNeM6tH7RQGlxS4FYO5W8nnuxTGnYwcpdbB9cBrFzvS3yRCw7CRveiWx7ZAHn+fQrNMpHQy64GH1UKhsNCBl+XDwhGroHOX9alDVrYFHqFQysTyx76Z0EKFtM4jajFbeI8Nt61Cn5N9v6NsuLmiTxm6pD5vq/KgKlvzXRRmN1u1nGqQjlHo7S8TsUK1HFJrX6Vw167TOlS3i8s5+tJi8EiF3Mls4Ca/P4wU+qS93tGdGzfSnX5oy9FsNMpSO+iHt3pjrV2cBLzCH49Go668URmN7DMVUrLQ56Im/pg4/PPrjcHX32lrfcgKy75aLEgL3tEKi7ryNrlT4TgN9JaxtG0t3cOWB+piuWlT7VSdJzBR6HOrvfcjFHoq16z58vw9RWE1UGtaXrP3QqVQBu5V+an2xnK+ZtVkIVEb05in4hdqYvNGtAlpyUbVOQK50O8QeJSXisoI/cfy+/Y+TflWNphkqVdUCmeW2mp66snCUbx4QWqDYySNWhD1a5ma6t2G56amtEK/Gu9IhQk+J3bjRSEpN2W/mymFgd79pHtZPEyjIOVLhhlHH3flta/UTqxoD+RiAo2F9GkKl//etqFez0cHTQmtKUWbxYNplF2rLEU2NgpVxuGlvq2k56zaOc1paqE/U2Hi21GtUHY9p5IylMKyOKSc44FnhsLhyJhKXayaHalNjHMEphT69Wmj81bfWzx+OSzQy7+kKBRRnLAr+204ZLP1WrcMLxOfVNx2dLNwukI/KXDj9H18Rn/39Dr3Diucv6YpDKUelUkrDKKiOIriMPbSsSM+KTsd91xdumx4X+3Lna6wsdtFM6s9JEX0/eFN/qDC/I2bplDSp6RMpZB9ltMHzXzx25KhUPKK7KxNdSpSX90Wz8ozk4TA5PlZVEiqWrr7+uwdsOL1p2RPs9B7ETLbFkUbbBLgfo8H72ViG6qdmge2dE0aBIfTizbAWWvEtY22YlCfp4Fsca6+x5dN7pt5fh/zm62eJlI4Vc9ptYVY0vE/GdOmDVc9ja/inrRnn6Ows8+CWuO4nl23vq5L9O3jbn7w+cRvNKhl2zLCnW1za0Iz/RdRoxgsKqKMz6uFTNa2u9Jw22FQHEWtd+/MYmh+/5tiwUjiurMn9bM8l/aQ8uvEaARzJbF63XrHOEHjts3JNPd0ZkvaVy23s8OCSY7Yi7nY7y/pqSYTO/Vr0dUoFOUa/31+6LIPpdCanPEbDD0Md22dcrNx/hrz4nBNbN8PLjAxY3X9N+OC8/o7ygMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgL+E/wAxW6RMdTx2ogAAAABJRU5ErkJggg==" alt="">
+                                            <img src="data:image/png;base64,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" alt="">
+                                        </div>
+                                    </button>
                                 </div>
 
-                                <form action="" id="card-payment">
+                                <div class="forms">
 
-                                    <div class="ctn-card-name">
-                                        <label for="">Nom de titulaire</label>
-                                        <input type="text" id="card-name" name="card-name">
-                                    </div>
-                                    <div class="ctn-card-number">
-                                        <label for="card-number">Numero de la carte</label>
-                                        <input type="text" id="card-number" name="card-number">
-                                    </div>
+                                    <form action="" id="card-payment">
 
-                                </form>
+                                        <div class="ctn-card-name">
+                                            <label for="">Nom de titulaire</label>
+                                            <input type="text" id="card-name" name="card-name">
+                                        </div>
+                                        <div class="ctn-card-number">
+                                            <label for="card-number">Numero de la carte</label>
+                                            <input type="text" id="card-number" name="card-number">
+                                        </div>
 
-                                <form action="" id="mobile-payement">
-                                    <select name="" id="">
-                                        <option value=""></option>
-                                    </select>
+                                        <div class="card-payment-foot">
 
-                                    <div class="ctn-mobile-num">
-                                        <input type="text" id="mobile-num" name="mobile-num">
-                                    </div>
-                                </form>
+                                            <div class="expiration">
+                                                Expiration
+                                                <div class="card-year-month">
+                                                    <input type="number" min="0" max="1" step="1" name="month0" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1)">
+                                                    <input type="number" min="0" max="1" step="1" name="month1" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1)">
+                                                    /
+                                                    <input type="number" min="0" max="1" step="1" name="year0" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1)">
+                                                    <input type="number" min="0" max="1" step="1" name="year1" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1)">
+                                                </div>
+                                            </div>
+
+                                            <div class="cvc">
+                                                CVC
+                                                <div class="inputs">
+                                                    <input type="number" min="0" max="1" step="1" name="cvc0" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1)">
+                                                    <input type="number" min="0" max="1" step="1" name="cvc1" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1)">
+                                                    <input type="number" min="0" max="1" step="1" name="cvc2" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1)">
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        
+
+                                    </form>
+
+                                    <form action="" id="mobile-payment">
+
+                                        <div class="number">
+
+                                            <select id="indicatif" name="indicatif">
+                                                <option value="">Votre pays</option>
+                                                <option value="+223">Mali</option>
+                                                <option value="Burkina Faso">Burkina Faso</option>
+                                                <option value="Niger">Niger</option>
+                                            </select>
+
+                                            <div class="ctn-mobile-num">
+                                                <input type="text" id="mobile-num" name="mobile-num">
+                                            </div>
+                                        </div>
+
+                                        <div class="code-confirmation">
+                                            <h4>Code de confirmation</h4>
+                                            <p>Compose le code **** pour générer un code de validation</p>
+
+                                            <div class="inputs">
+                                                <input type="number" max="9" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1)" name="code0">
+                                                <input type="number" max="9" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1)" name="code1">
+                                                <input type="number" max="9" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1)" name="code2">
+                                                <input type="number" max="9" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1)" name="code3">
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+
                                 
                             </div>
 
-                            <button class="poursuivre">Poursuivre</button>
+                            <button class="btn-pay">Payer</button>
                         </div>
 
-                        <div class="step2"></div>
+                        <div class="step2">
+                            <div class="head">
+                                <img src="{{ asset('images/image2.png') }}" alt="">
+                                <div class="step2-head-ctn">
+                                    Comprendre les bitcoins et les criptos
+                                    <div class="cour-info">
+                                        <div class="block1">
+                                            <div class="hour">4h</div> 
+                                            <div class="cour-cat">Design</div>
+                                        </div>
+                                        <div class="user"> <img src="{{ asset('images/image4.png')}}" alt="">Isaac Mars</div>
+                                    </div>
+                                    <div class="acces">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                        </svg>
+                                        Acces à vie gratuitement</div>
+                                </div>   
+                            </div>
+                            <button class="btn-start-cour">Commencer</button>
+                        </div>
 
                     </div>
                
+                </div>
+
+            </section>
+
+            <!-- Messagerie Page -->
+
+            <section id="messagerie">
+
+                <!-- Panneau gauche - Liste des contacts -->
+
+                <div class="messagerie-sidebar">
+                    
+                    <div class="messagerie-header">
+                        <h2>Messagerie</h2>
+                        <div class="search-container">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                            <input type="text" placeholder="Rechercher" id="search-contacts">
+                        </div>
+                    </div>
+
+                    <div class="contacts-section">
+                        <h3>Contacts</h3>
+                        <div class="online-contacts">
+                            <div class="contact-item active" data-contact="ralph-edwards">
+                                <div class="contact-avatar">
+                                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face" alt="Ralph Edwards">
+                                    <span class="status-online"></span>
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Ralph Edwards</div>
+                                    <div class="contact-status">En ligne depuis 3h</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item" data-contact="courtney-henry">
+                                <div class="contact-avatar">
+                                    <img src="https://images.unsplash.com/photo-1494790108755-2616b668e7b0?w=50&h=50&fit=crop&crop=face" alt="Courtney Henry">
+                                    <span class="status-online"></span>
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Courtney Henry</div>
+                                    <div class="contact-status">Activité</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item" data-contact="ronald-richards">
+                                <div class="contact-avatar">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face" alt="Ronald Richards">
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Ronald Richards</div>
+                                    <div class="contact-status">Bonjour Cedric</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item" data-contact="devon-lane">
+                                <div class="contact-avatar">
+                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face" alt="Devon Lane">
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Devon Lane</div>
+                                    <div class="contact-status">Bonjour Cedric</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item" data-contact="darlene-robertson">
+                                <div class="contact-avatar">
+                                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop&crop=face" alt="Darlene Robertson">
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Darlene Robertson</div>
+                                    <div class="contact-status">Bonjour Cedric</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item" data-contact="cody-fisher">
+                                <div class="contact-avatar">
+                                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=50&h=50&fit=crop&crop=face" alt="Cody Fisher">
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Cody Fisher</div>
+                                    <div class="contact-status">Bonjour Cedric</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="conversations-section">
+                        <h3>Conversations</h3>
+                        <div class="conversation-list">
+                            <div class="contact-item" data-contact="courtney-henry">
+                                <div class="contact-avatar">
+                                    <img src="https://images.unsplash.com/photo-1494790108755-2616b668e7b0?w=50&h=50&fit=crop&crop=face" alt="Courtney Henry">
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Courtney Henry</div>
+                                    <div class="contact-status">4:52</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item" data-contact="ronald-richards">
+                                <div class="contact-avatar">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face" alt="Ronald Richards">
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Ronald Richards</div>
+                                    <div class="contact-status">9:12</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item" data-contact="ralph-edwards">
+                                <div class="contact-avatar">
+                                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face" alt="Ralph Edwards">
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Ralph Edwards</div>
+                                    <div class="contact-status">7:30</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item" data-contact="devon-lane">
+                                <div class="contact-avatar">
+                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face" alt="Devon Lane">
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Devon Lane</div>
+                                    <div class="contact-status">2:06</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item" data-contact="darlene-robertson">
+                                <div class="contact-avatar">
+                                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop&crop=face" alt="Darlene Robertson">
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Darlene Robertson</div>
+                                    <div class="contact-status">2:06</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item" data-contact="cody-fisher">
+                                <div class="contact-avatar">
+                                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=50&h=50&fit=crop&crop=face" alt="Cody Fisher">
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Cody Fisher</div>
+                                    <div class="contact-status">2:06</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panneau droit - Zone de conversation -->
+                <div class="messagerie-chat">
+                    <div class="chat-header">
+                        <div class="chat-contact-info">
+                            <div class="chat-avatar">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" alt="Ralph Edwards" id="current-chat-avatar">
+                                <span class="status-online"></span>
+                            </div>
+                            <div class="chat-contact-details">
+                                <div class="chat-contact-name" id="current-chat-name">Ralph Edwards</div>
+                                <div class="chat-contact-status" id="current-chat-status">En ligne depuis 3h</div>
+                            </div>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="chat-action-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message-day">Aujourd'hui</div>
+                        
+                        <div class="message received">
+                            <div class="message-content">Bonjour, ça va et toi ?</div>
+                            <div class="message-time">11:00</div>
+                        </div>
+
+                        <div class="message sent">
+                            <div class="message-content">Bonjour Henry, comment vas-tu ?</div>
+                            <div class="message-time">11:00 ✓✓</div>
+                        </div>
+
+                        <div class="message received">
+                            <div class="message-content">Bonjour, ça va et toi ?</div>
+                            <div class="message-time">11:00</div>
+                        </div>
+
+                        <div class="message sent">
+                            <div class="message-content">Bonjour Henry, comment vas-tu ?</div>
+                            <div class="message-time">11:00 ✓✓</div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-container">
+                        <div class="input-wrapper">
+                            <input type="text" placeholder="Tapez votre message..." id="message-input">
+                            <button class="send-btn" id="send-message">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="formation-suivie">
+
+                <div class="forma-head">
+                    <h4>Vos formations</h4>
+
+                    <div class="ctn-right">
+                        <form action="">
+                            <div class="ctn-forma-search">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                                </svg>
+                                <input type="text" name="forma-search" placeholder="Rechercher">
+                            </div>
+                            <button class="btn-forma-search">Rechercher</button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+                <div class="btns">
+                    Les cours que vous suivez sont ici
+
+                    <div class="btns-btns">
+                        <button class="btn-table-view">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-list-ul" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+                            </svg>
+                        </button>
+
+                        <button class="btn-grid-view">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-grid" viewBox="0 0 16 16">
+                                <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5z"/>
+                            </svg>
+                        </button>
+                    </div>
+                            
+                </div>
+
+                <!-- Table display -->
+
+                <div class="forma-cour-list">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-sort-alpha-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M10.082 5.629 9.664 7H8.598l1.789-5.332h1.234L13.402 7h-1.12l-.419-1.371zm1.57-.785L11 2.687h-.047l-.652 2.157z"/>
+                                        <path d="M12.96 14H9.028v-.691l2.579-3.72v-.054H9.098v-.867h3.785v.691l-2.567 3.72v.054h2.645zm-8.46-.5a.5.5 0 0 1-1 0V3.707L2.354 4.854a.5.5 0 1 1-.708-.708l2-1.999.007-.007a.5.5 0 0 1 .7.006l2 2a.5.5 0 1 1-.707.708L4.5 3.707z"/>
+                                    </svg>
+                                    Titre
+                                </th>
+                                <th>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-hourglass-top" viewBox="0 0 16 16">
+                                        <path d="M2 14.5a.5.5 0 0 0 .5.5h11a.5.5 0 1 0 0-1h-1v-1a4.5 4.5 0 0 0-2.557-4.06c-.29-.139-.443-.377-.443-.59v-.7c0-.213.154-.451.443-.59A4.5 4.5 0 0 0 12.5 3V2h1a.5.5 0 0 0 0-1h-11a.5.5 0 0 0 0 1h1v1a4.5 4.5 0 0 0 2.557 4.06c.29.139.443.377.443.59v.7c0 .213-.154.451-.443.59A4.5 4.5 0 0 0 3.5 13v1h-1a.5.5 0 0 0-.5.5m2.5-.5v-1a3.5 3.5 0 0 1 1.989-3.158c.533-.256 1.011-.79 1.011-1.491v-.702s.18.101.5.101.5-.1.5-.1v.7c0 .701.478 1.236 1.011 1.492A3.5 3.5 0 0 1 11.5 13v1z"/>
+                                    </svg>
+                                    Durée
+                                </th>
+                                <th>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-calendar-week" viewBox="0 0 16 16">
+                                        <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                                    </svg>
+                                    Date début
+                                </th>
+                                <th>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-ui-radios-grid" viewBox="0 0 16 16">
+                                        <path d="M3.5 15a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5m9-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5m0 9a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5M16 3.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-9 9a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m5.5 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m-9-11a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m0 2a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+                                    </svg>
+                                    Categorie
+                                </th>
+                                <th>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-person" viewBox="0 0 16 16">
+                                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                                    </svg>
+                                    Nom formateur
+                                </th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                            <tr> 
+                                <td>Nom cours</td>
+                                <td>4h</td>
+                                <td>Date Début</td>
+                                <td>Catégorie</td>
+                                <td>Nom formateur</td>
+                            </tr>
+                        </tbody>
+
+                        <tfoot></tfoot>
+                    </table>
+                </div>
+
+                <!-- Grid display -->
+
+                <div class="forma-cour-grid active">
+
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
+                                <source src="" type=""> </source>
+                            </video>
+                        </div>
+                        <div class="text">
+                            <div class="type">Bussiness</div>
+                            <div class="name">Cour name</div>
+                            <div class="jauge"> 
+                                <div class="jauge-jauge"></div> 
+                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
+                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                                </svg>
+                            </div>
+                            <div class="duree-user">
+                                <div class="duree">4h</div>
+                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
+                                <source src="" type=""> </source>
+                            </video>
+                        </div>
+                        <div class="text">
+                            <div class="type">Bussiness</div>
+                            <div class="name">Cour name</div>
+                            <div class="jauge"> 
+                                <div class="jauge-jauge"></div> 
+                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
+                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                                </svg>
+                            </div>
+                            <div class="duree-user">
+                                <div class="duree">4h</div>
+                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
+                                <source src="" type=""> </source>
+                            </video>
+                        </div>
+                        <div class="text">
+                            <div class="type">Bussiness</div>
+                            <div class="name">Cour name</div>
+                            <div class="jauge"> 
+                                <div class="jauge-jauge"></div> 
+                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
+                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                                </svg>
+                            </div>
+                            <div class="duree-user">
+                                <div class="duree">4h</div>
+                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
+                                <source src="" type=""> </source>
+                            </video>
+                        </div>
+                        <div class="text">
+                            <div class="type">Bussiness</div>
+                            <div class="name">Cour name</div>
+                            <div class="jauge"> 
+                                <div class="jauge-jauge"></div> 
+                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
+                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                                </svg>
+                            </div>
+                            <div class="duree-user">
+                                <div class="duree">4h</div>
+                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
+                                <source src="" type=""> </source>
+                            </video>
+                        </div>
+                        <div class="text">
+                            <div class="type">Bussiness</div>
+                            <div class="name">Cour name</div>
+                            <div class="jauge"> 
+                                <div class="jauge-jauge"></div> 
+                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
+                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                                </svg>
+                            </div>
+                            <div class="duree-user">
+                                <div class="duree">4h</div>
+                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
+                                <source src="" type=""> </source>
+                            </video>
+                        </div>
+                        <div class="text">
+                            <div class="type">Bussiness</div>
+                            <div class="name">Cour name</div>
+                            <div class="jauge"> 
+                                <div class="jauge-jauge"></div> 
+                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
+                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                                </svg>
+                            </div>
+                            <div class="duree-user">
+                                <div class="duree">4h</div>
+                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
+                                <source src="" type=""> </source>
+                            </video>
+                        </div>
+                        <div class="text">
+                            <div class="type">Bussiness</div>
+                            <div class="name">Cour name</div>
+                            <div class="jauge"> 
+                                <div class="jauge-jauge"></div> 
+                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
+                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                                </svg>
+                            </div>
+                            <div class="duree-user">
+                                <div class="duree">4h</div>
+                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
+                                <source src="" type=""> </source>
+                            </video>
+                        </div>
+                        <div class="text">
+                            <div class="type">Bussiness</div>
+                            <div class="name">Cour name</div>
+                            <div class="jauge"> 
+                                <div class="jauge-jauge"></div> 
+                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
+                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                                </svg>
+                            </div>
+                            <div class="duree-user">
+                                <div class="duree">4h</div>
+                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
             </section>
@@ -3149,21 +2101,21 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-person-fill" viewBox="0 0 16 16">
                                             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                                         </svg>
-                                        <input type="text" id="username" name="username" required>
+                                        <input type="text" id="username" name="username" placeholder="Username" required>
                                     </div>
 
                                     <div class="ctn-input ctn-email">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-envelope" viewBox="0 0 16 16">
                                             <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
                                         </svg>
-                                        <input type="email" id="email" name="email" required>
+                                        <input type="email" id="email" name="email" placeholder="Email" required>
                                     </div>
 
                                     <div class="ctn-input ctn-password">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-lock" viewBox="0 0 16 16">
                                             <path fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4M4.5 7A1.5 1.5 0 0 0 3 8.5v5A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 11.5 7zM8 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
                                         </svg>
-                                        <input type="password" id="password" name="passowrd" required>
+                                        <input type="password" id="password" name="passowrd" placeholder="Mot de passe" required>
                                     </div>
 
                                     <button type="submit">Envoyer</button>
