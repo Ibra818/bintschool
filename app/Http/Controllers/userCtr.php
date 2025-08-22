@@ -10,17 +10,11 @@ use App\Models\{User, };
 
 class userCtr extends Controller
 {
+
+    // Register function
      public function register(userRqt $request){
 
         try{
-
-            // $request->validate([
-            //     'username' => 'required|string|max:255',
-            //     'email' => 'required|string|email|max:255|unique:users',
-            //     'password' => 'required|string|min:8',
-            //     'confirm_password' => 'required|string|same:password',
-            // ]);
-
 
             if($request -> password == $request -> confirm_password){
                 
@@ -46,7 +40,7 @@ class userCtr extends Controller
 
     public function login(Request $request){
 
-        $request->validate([
+        $request -> validate([
         'email' => 'required|string|email|max:255',
         'password' => 'required|string|min:8',
         ]);
@@ -101,6 +95,10 @@ class userCtr extends Controller
 
         $user -> delete();
         return response() -> json(['message' => 'Votre compte a été supprimé, revenez a tout moment!']);
+    }
+
+    public function changeUserInfo(Request $request){
+        return response() -> json($request);
     }
     public function payCour(Request $request){
         

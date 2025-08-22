@@ -265,7 +265,6 @@
 
 #message.success .success.active h4{
     width: 100%;
-    font-size: 2em;
     font-weight: 500;
     gap: 5%;
     display: flex;
@@ -294,9 +293,10 @@
  
 #message.error .error.active{
     /*  red:  #a91d1dff*/
-    background-color: var(--secondary) ; 
+    background-color: rgb(188, 25, 25); 
     box-shadow: 0 0 10px 0 #ffffff15;
-    height:20%;
+    height:auto;
+    min-height: 30%;
     width: 20%;
     text-align:center;
     color: white;
@@ -309,14 +309,17 @@
     align-items:center;
     margin: 10px 0 10px 0;
     position:fixed;
+    word-wrap: break-word;
     top:0;
     left:40%;
     z-index: 100;
     transition:all .5s ease;
+    padding: 0 0 .5% 0;
 }
 
 #message.error .error.active h4{
     width: 100%;
+    min-height: 25%;
     font-size: 2em;
     font-weight: 500;
     gap: 5%;
@@ -325,15 +328,21 @@
     align-items: center;
 }
 
-#message.error .error.active h4 svg{
-    height: 90%;
+#message.error .error.active h4 .ctn-svg{
+    height: 100%;
     width:40px;
-    padding: 1% 2% 2% 2%;
     border-radius: 50%;
-    fill: white;
-    background-color: red;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    background-color: white;
 }
 
+#message.error .error.active h4 .ctn-svg svg{
+    fill: red;
+    height:75%;
+    width: 75%;
+}
 #message.error .error.active .error-msg{
     width: 100%;
     padding: 0 5% 0 5%;
@@ -344,12 +353,14 @@
     width: 0;
     height:0;
     overflow:hidden;
-    transition:all .5s ease;
+    opacity: 0;
+    transition: opacity .5s ease-out;
 }
 
 #loader-overlay.active{
     background-color: rgba(0, 0, 0, 0.8);
     z-index: 16;
+    opacity: 1;
     position:fixed;
     top:0;
     height:100%;
@@ -357,6 +368,7 @@
     display:flex;
     justify-content: center;
     align-items:center;
+    transition: opacity .5s ease-out
 }
 
 #loader-overlay.active .loader{

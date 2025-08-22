@@ -6,7 +6,7 @@
     <script>
 
         document.addEventListener('DOMContentLoaded', function(){
-            const pauses = document.querySelectorAll('.pause');
+            const pauses = document.querySelectorAll('.pause-play .bi-play-fill');
             const listes = document.querySelectorAll('#categories ul li');
             const main = document.querySelector('main');
             const navList = document.querySelectorAll('nav ul li');
@@ -16,6 +16,7 @@
             const messagerieLink = document.querySelector('nav ul li.messagerie-link');
             const messagerie = document.querySelector('#messagerie');
             const formaSuivieLink = document.querySelector('nav ul li.forma-suivie');
+            const addFormLink = document.querySelector('nav ul li.ajout-forma');
             const formaSuivie = document.querySelector('#formation-suivie');
             const btnParam = document.querySelector('#profile .user .user-profile .btns .param');
             const btnShare = document.querySelector('#profile .user .user-profile .btns .profile-share');
@@ -44,9 +45,8 @@
             const btnContinuDelAcc = document.querySelector('#params .del-reasons .foot .btn-continue-del-acc');
             const sellCourOverlay = document.querySelector('#cour-details #sell-cour-detail-overlay');
             const btnBuyCour = document.querySelector('#cour-details .cour-detail-body .btn-buy-cour');
-            const btnCardPay = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .payment-methods .btns .btn-card-payement');
-            const btnMobilePay = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .payment-methods .btns .btn-mobile-money');
-            const mobilePayment = document.querySelector('#mobile-payment');
+            const btnCardPay = document.querySelector('#cour-details #sell-cour-detail-overlay .sell-cour-steps .step1 .payment-methods .btns .btn-card-payement');
+            const btnMobilePay = document.querySelector('#cour-details #sell-cour-detail-overlay .sell-cour-steps .step1 .payment-methods .btns .btn-mobile-money');
             const pay = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .step1 .btn-pay');
             const btnRetourSellCour = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .btn-retour');
             const sellCourStep1 = document.querySelector('#sell-cour-detail-overlay .sell-cour-steps .step1');
@@ -59,8 +59,286 @@
             const btnFormaGrid = document.querySelector('#formation-suivie .btns .btn-grid-view');
             const cardPay = document.querySelector('#card-payment');
             const mobPay = document.querySelector('#mobile-payment');
+            const paymentMethods = document.querySelector('#cour-details #sell-cour-detail-overlay .sell-cour-steps .step1 .payment-methods');
+            const btnOverlayRetour = document.querySelector('#overlay .btn-overlay-retour');
+            const userEmail = document.querySelector('#email');
+            const userPassword = document.querySelector('#password');
+            const userName = document.querySelector('#username');
+            const changePersInfoForm = document.querySelector('#params .btns .info-perso form');
+            const changeUserInfo = document.querySelector('#change-user-info');
+            const btnChangeUserInfo = document.querySelector('#change-user-info form .btn-change-info');
+            const formInfoPerso = document.querySelector('#form-info-perso');
+            const loader = document.querySelector('.loader');
+            const courListItems = document.querySelectorAll('#formation-suivie .forma-cour-list table tbody tr');
+            const courGridItems = document.querySelectorAll('#formation-suivie .forma-cour-grid .list-item');
+            const addFormPage = document.querySelector('#ajout-formation');
+            const videoIntro = document.querySelector('#ajout-formation #video_intro');
+            let addModuleForm = document.querySelector('#ajout-formation form#add-modules');
+            const addVideoIntro = document.querySelector('#ajout-formation form#add-modules .add-intro-video');
+            const btnAddModule = document.querySelector('#ajout-formation form#add-modules .add-module');
+            const addForma = document.querySelector('#overlay form#add-forma');
+            const btnAddForma = document.querySelector('#ajout-formation .btn-add-forma');
+
+            document.querySelectorAll('#content .content-item video').forEach(video=>{
+                video.addEventListener('click', (e)=>{
+                    e.preventDefault();
+                    e.currentTarget.play();
+                    // e.curretTarget.removeAttribute('muted');
+            })
+            });
+            
+
+            addModuleForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const donnee = new FormData(e.target);
+                const element = e.currentTarget.querySelectorAll('.ctn-input-video input');
+                // console.log(donnee.get('module-name-1'), donnee.get('module-file-1'));
+
+
+                $.ajax({
+                    url: "/addmodule",
+                    type: 'POST',
+                    data: donnee,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                     },
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(response) {
+                        console.log(response);
+                    },
+                });
+            });
+
+            btnAddForma.addEventListener('click', (e)=>{
+                e.preventDefault();
+                overlay.classList= [];
+                overlay.classList.add('add-forma')
+                if(addForma.classList.contains('active')) return;
+                addForma.classList.add('active');
+            });
+
+            btnAddModule.addEventListener('click', (e)=>{
+                e.preventDefault();
+                let length = document.querySelectorAll('#ajout-formation form .ctn-input-video').length;
+                length++;
+                let div = document.createElement('div');
+                let button = document.createElement('button');
+                let input = document.createElement('input');
+                let textInput = document.createElement('input');
+                textInput.type = 'text';
+                textInput.setAttribute('required', '');
+                textInput.placeholder = `Nom du module`;
+                textInput.name = `module-name-${length}`;
+                textInput.classList.add(`module-name-${length}`);
+
+                button.classList.add('btn-add-module-vid');
+                button.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                            <path d="M360-320h80v-120h120v-80H440v-120h-80v120H240v80h120v120ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h480q33 0 56.5 23.5T720-720v180l160-160v440L720-420v180q0 33-23.5 56.5T640-160H160Zm0-80h480v-480H160v480Zm0 0v-480 480Z"/>
+                    </svg>
+                `;
+                div.classList.add('ctn-input-video');
+                input.type = 'file';
+                input.name = `module-file-${length}`;
+                div.appendChild(textInput); 
+                div.appendChild(input);
+                div.appendChild(button);
+                addModuleForm.insertBefore(div, document.querySelector('#add-modules button[type="submit"]'));
+
+                const addVids = document.querySelectorAll('#ajout-formation form .ctn-input-video .btn-add-module-vid');
+
+                addVids.forEach(addVid=>{
+                    addVid.addEventListener('click', (e)=>{
+                        e.preventDefault();
+                        e.currentTarget.parentNode.querySelector('input[type="file"]');
+                        e.currentTarget.parentNode.querySelector('input[type="file"]').click();
+                    });
+                });
+            });
+
+
+
+            // Add introduction video to the formation
+
+            addVideoIntro.addEventListener('click', (e)=> {
+                e.preventDefault();
+                videoIntro.click();
+            });
+
+            // Redirection when a grid element's clicked 
+
+            courGridItems.forEach(item=>{
+                item.addEventListener('click', (e)=>{
+                    e.preventDefault();
+
+                    const categorie = e.currentTarget.querySelector('.type').innerText;
+                    const nom = e.currentTarget.querySelector('.name').innerText;
+                    const user = e.currentTarget.querySelector('.user').innerText;
+                    const id = e.currentTarget.querySelector('.id').innerText;
+
+                    $.ajax({
+                        url: '{{ url('sendSingleFormation') }}/' + id,
+                        type: 'GET',
+                        contentType: 'application/json',
+                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+                        success: function(response){
+                            console.log(response);
+                            window.location.href = '{{ url('sendSingleFormation') }}/' + id;
+                        },
+                        error: function(erreurs){
+                            console.log(erreurs);
+                        }
+
+                    });
+                });
+            });
+
+            // Redirection when a list-element's clicked
+
+            courListItems.forEach(item =>{
+                item.addEventListener('click', (e)=>{
+                    e.preventDefault();
+                    const row = e.currentTarget.querySelectorAll('td');
+                    
+                    $.ajax({
+                        url: "{{ url('sendSingleFormation') }}/" + row[0].innerText,
+                        type: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': " {{ csrf_token() }} "
+                        },
+                        
+                        success: function(response){
+                            console.log(response);
+                            window.location.href = "{{ url('sendSingleFormation') }}/" + row[0].innerText;
+                        },
+                        
+                        error: function(erreurs){
+                            console.log(erreurs);
+                        }
+                    });
+
+
+                });
+            });
+
+
+            // Change user informations
+
+            formInfoPerso.addEventListener('submit', (e)=>{
+                e.preventDefault();
+                overlay.classList.add('change-info');
+                params.classList.remove('active');
+                changeUserInfo.classList.add('active');
+
+            });
+            
+
+            btnChangeUserInfo.addEventListener('click', (e)=>{
+                e.preventDefault();
+                const email = document.querySelector('#email').value;
+                const password = document.querySelector('#password').value;
+                const username = document.querySelector('#username').value;
+                const passwordActuel = document.querySelector('#actual-password').value;
+                if(overlay.classList.contains('active')) overlay.classList.remove('active');
+                if(overlay.classList.contains('change-info')) overlay.classList.remove('change-info');
+                if(overlay.classList.contains('del-acc')) overlay.classList.remove('del-acc');
+                overlay.classList.add('load');
+                loader.classList.add('active')
+                console.log(email.length)
+
+                $.ajax({
+                    url: 'change-user-info',
+                    type: 'PUT',
+                    headers: {
+                        'Content-Type' : 'application/json',
+                        'X-CSRF-TOKEN' : " {{ csrf_token() }} "
+                    },
+                    processData: false,
+                    data: JSON.stringify({
+                        email: email.length > 8 ? email : '',
+                        name : username.length > 2 ? username : '',
+                        newPassword: password.length > 8 ? password : '',
+                        oldPass : passwordActuel ? passwordActuel : '', 
+                    }),
+
+                    success: function (response){
+                        if(overlay.classList.contains('load')) overlay.classList.remove('load');
+                        console.log(response)
+                    },
+                    error: function(erreurs){
+                        if(overlay.classList.contains('load')) overlay.classList.remove('load');
+                        console.log(erreurs)
+                    }
+
+                });
+            });
+
+
+            userPassword.addEventListener('input', (e)=>{
+                e.preventDefault();
+                const labelPassword = document.querySelector('#params .btns .info-perso form .label-password');
+                console.log(labelPassword.innerText);
+
+                if(e.currentTarget.value.length < 8){
+                    e.currentTarget.parentNode.style.cssText += `border: 2px solid red; transition: border .5s ease-in;`;
+                    labelPassword.innerText = '8 caractères minimum pour le mot de passe';
+                    labelPassword.style.cssText = `color: red; transition: color .5s ease;`;
+                }else{
+                    e.currentTarget.parentNode.style.cssText += ` border: 2px solid green; transition: border .5s ease-in; `;
+                    labelPassword.innerText = 'Mot de passe correct';
+                    labelPassword.style.cssText= `color: green; transition: transform .5s ease;`;
+                }
+            });
+
+            userEmail.addEventListener('input', (e)=>{
+                e.preventDefault();
+                const labelEmail = document.querySelector('#params .btns .info-perso form .label-email');
+                console.log(labelEmail.innerText);
+                if(e.currentTarget.value.length < 8){
+                    e.currentTarget.parentNode.style.cssText += `border: 2px solid red; transition: border .5s ease-in;`;
+                    labelEmail.innerText = '8 caractères minimum pour le mail';
+                    labelEmail.style.cssText = `color: red; transition: color .5s ease;`;
+                }else{
+                    e.currentTarget.parentNode.style.cssText += `border: 2px solid green; transition: border .5s ease-in;`;
+                    labelEmail.innerText = 'Email';
+                    labelEmail.style.cssText= `color: green; transition: transform .5s ease;`;
+                }
+            });
+
+            userName.addEventListener('input', (e)=>{
+                e.preventDefault();
+                const labelUsername = document.querySelector('#params .btns .info-perso form .label-username');
+                console.log(labelUsername.innerText);
+                if(e.currentTarget.value.length < 2){
+                    e.currentTarget.parentNode.style.cssText += `border: 2px solid red; transition: border .5s ease-in;`;
+                    labelUsername.innerText = '2 caractères minimum pour le Nom d\'utilisateur';
+                    labelUsername.style.cssText = `color: red; transition: color .5s ease;`;
+                }else{
+                    e.currentTarget.parentNode.style.cssText += `border: 2px solid green; transition: border .5s ease-in;`;
+                    labelUsername.innerText = 'Nom et Prénom';
+                    labelUsername.style.cssText= `color: green; transition: transform .5s ease;`;
+                }
+            });
+            
+
+            btnOverlayRetour.addEventListener('click', (e) =>{
+                if(delAccMsg.classList.contains('active')) delAccMsg.classList.remove('active');
+                if(switchAcc.classList.contains('active')) switchAcc.classList.remove('switchAcc');
+                if(overlay.classList.contains('active')) overlay.classList.remove('active');
+                if(overlay.classList.contains('del-acc')) overlay.classList.remove('del-acc');
+                if(changeUserInfo.classList.contains('active')) changeUserInfo.classList.remove('active');
+                if(addForma.classList.contains('active')) addForma.classList.remove('active');
+                if(overlay.classList.contains('change-info')) overlay.classList.remove('change-info');
+                overlay.classList = [];
+            });
             
             // Éléments de la messagerie
+
             let messagerieInitialized = false;
             let contactItems;
             let messageInput;
@@ -90,6 +368,7 @@
                 e.preventDefault();
                 if(sellCourStep2.classList.contains('active')){
                     sellCourStep2.classList.remove('active');
+                    sellCourStep1.classList.add('active');
                 }else{
                     e.currentTarget.parentNode.parentNode.classList.remove('active');
                 }
@@ -103,7 +382,7 @@
                 e.preventDefault();
 
                 const token = " {{ csrf_token() }} ";
-                const data = new FormData(mobilePayment);
+                const data = new FormData(mobPay);
                 const number = data.get('indicatif') + data.get('mobile-num');
                 const code = data.get('code0') + data.get('code1') + data.get('code2') + data.get('code3');
 
@@ -134,26 +413,37 @@
             
             // 
 
-            btnMobilePay.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.currentTarget.style.cssText += 'color: orange; border:2px solid orange; transition: color .5s ease;';
-                btnCardPay.style.cssText += 'color: white; border:none; transition: all .5s ease-out;';
-                console.log('mobile pay clicked');
-                if(mobPay.classList.contains('active')){
-                    mobPay.classList.remove('active');
-                }else{
-                    mobPay.classList.add('active');
-                }
-            });
-
             btnCardPay.addEventListener('click', (e) =>{
                 e.preventDefault();
                 e.currentTarget.style.cssText += 'color: orange; border:2px solid orange; transition: color .5s ease;';
                 btnMobilePay.style.cssText += 'color: white; border:none; transition: all .5s ease-out;';
+                if(mobPay.classList.contains('active')) mobPay.classList.remove('active');
+                if(paymentMethods.classList.contains('mobile')) paymentMethods.classList.remove('mobile');
                 if(cardPay.classList.contains('active')){
                     cardPay.classList.remove('active');
+                    if(mobPay.classList.contains('active')) mobPay.classList.remove('active');
+                    paymentMethods.classList.add('card');
+
                 }else{
+                    paymentMethods.classList.remove('card');
                     cardPay.classList.add('active');
+                };
+
+            });
+
+            btnMobilePay.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.currentTarget.style.cssText += 'color: orange; border:2px solid orange; transition: color .5s ease;';
+                btnCardPay.style.cssText += 'color: white; border:none; transition: all .5s ease-out;';
+                if(!cardPay.classList.contains('active')) cardPay.classList.add('active');
+                if(paymentMethods.classList.contains('card')) paymentMethods.classList.remove('card');
+                if(mobPay.classList.contains('active')){
+                    paymentMethods.classList.remove('mobile');
+                    mobPay.classList.remove('active');
+                }else{
+                    paymentMethods.classList.add('mobile');
+                    if(!cardPay.classList.contains('active')) cardPay.classList.add('active');
+                    mobPay.classList.add('active');
                 }
             });
 
@@ -173,7 +463,6 @@
             allCours.forEach((cour) => {
                 cour.addEventListener('click', (e)=>{
                     e.preventDefault();
-                    console.log('clické')
                     courDetailsPage.classList.add('active');
                 });
             });
@@ -278,6 +567,7 @@
 
             btnParam.addEventListener('click', (e)=>{
                 e.preventDefault();
+                if(switchAcc.classList.contains('active')) switchAcc.classList.remove('active');
                 if(! overlay.classList.contains('active')) overlay.classList.add('active');
                 if(! params.classList.contains('active')) params.classList.add('active');
             });
@@ -299,11 +589,28 @@
             //     coverPic.click();
             // });
 
+            // Appear the Ajout formation page
+
+            addFormLink.addEventListener('click', (e)=>{
+                e.preventDefault();
+                if(addFormPage.classList.contains('active')) return;
+                if(pourToi.classList.contains('active')) pourToi.classList.remove('active');
+                if(profileLink.classList.contains('active')) profileLink.classList.remove('active');
+                if(profilePage.classList.contains('active')) profilePage.classList.remove('active');
+                if(messagerieLink.classList.contains('active')) messagerieLink.classList.remove('active');
+                if(messagerie.classList.contains('active')) messagerie.classList.remove('active');
+                if(formaSuivieLink.classList.contains('active')) formaSuivieLink.classList.remove('active');
+                if(formaSuivie.classList.contains('active')) formaSuivie.classList.remove('active');
+                addFormPage.classList.add('active');
+            });
+
             // Appear the home page
 
             pourToi.addEventListener('click', (e)=>{
                 e.preventDefault();
                 if(pourToi.classList.contains('active')) return;
+                if(addFormPage.classList.contains('active')) addFormPage.classList.remove('active');
+                if(addFormLink.classList.contains('active')) addFormLink.classList.remove('active');
                 if(profileLink.classList.contains('active')) profileLink.classList.remove('active');
                 if(profilePage.classList.contains('active')) profilePage.classList.remove('active');
                 if(messagerieLink.classList.contains('active')) messagerieLink.classList.remove('active');
@@ -318,6 +625,7 @@
 
             profileLink.addEventListener('click', (e)=>{
                 e.preventDefault();
+                if(addFormPage.classList.contains('active')) addFormPage.classList.remove('active');
                 if(profilePage.classList.contains('active')) return;
                 if(formaSuivieLink.classList.contains('active')) formaSuivieLink.classList.remove('active');
                 if(formaSuivie.classList.contains('active')) formaSuivie.classList.remove('active');
@@ -479,6 +787,7 @@
                 e.preventDefault();
 
                 if(messagerie.classList.contains('active')) return;
+                if(addFormPage.classList.contains('active')) addFormPage.classList.remove('active');
                 if(profile.classList.contains('active')) profile.classList.remove('active');
                 if(pourToi.classList.contains('active')) pourToi.classList.remove('active');
                 if(profilePage.classList.contains('active')) profilePage.classList.remove('active');
@@ -495,6 +804,7 @@
 
             formaSuivieLink.addEventListener('click', (e)=>{
                 if(formaSuivie.classList.contains('active')) return;
+                if(addFormPage.classList.contains('active')) addFormPage.classList.remove('active');
                 if(profile.classList.contains('active')) profile.classList.remove('active');
                 if(pourToi.classList.contains('active')) pourToi.classList.remove('active');
                 if(profilePage.classList.contains('active')) profilePage.classList.remove('active');
@@ -534,13 +844,21 @@
             pauses.forEach(pause =>{
                 pause.addEventListener('click', (e)=>{
                     e.preventDefault();
-                    const video = pause.previousElementSibling;
-                    if(pause.classList.contains('active')) {
-                        pause.classList.add('unactive');
-                        video.play();
-                    }else{
-                        return; 
+
+                    if(e.currentTarget.parentNode.previousElementSibling.paused){
+                         e.currentTarget.parentNode.previousElementSibling.parentNode.classList.add('play');
+                        e.currentTarget.parentNode.previousElementSibling.play();
+                        e.currentTarget.parentNode.previousElementSibling.muted= false; 
+                        return;
                     }
+                    if(e.currentTarget.parentNode.previousElementSibling.play){
+                        console.log('ca joue!');
+                        e.currentTarget.parentNode.previousElementSibling.pause();
+                        if(e.currentTarget.parentNode.previousElementSibling.parentNode.classList.contains('play')) e.currentTarget.parentNode.previousElementSibling.parentNode.classList.remove('play');
+                    }
+                    
+                    
+                    // e.currentTarget.previousElementSibling.play();
                 });
 
             });
@@ -582,6 +900,14 @@
                     </svg>    
                     Formation suivies
                 </li>
+                @if($user -> role == 'formateur')
+                <li class="ajout-forma">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-book-fill" viewBox="0 0 16 16">
+                        <path d="M8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+                    </svg>    
+                    Ajouter formation
+                </li>
+                @endif
 
             </ul> 
         </div>
@@ -625,13 +951,19 @@
 
                 <div id="content">
 
+                    @foreach($modules as $module)
+
                     <div class="content-item">
                         <video  muted poster="{{ asset('images/image2.png') }}" preload="auto">
-                            <source src="#" type=""> </source>
+                            <source src=" {{ asset('storage/' . $module->module_video) }} " type="video/mp4">
                         </video>
-                        <div class="pause">
+                        <div class="pause-play">
                             <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-play-fill" viewBox="0 0 16 16">
                                 <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
+                            </svg>
+
+                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-pause-fill" viewBox="0 0 16 16">
+                                <path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5m5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5"/>
                             </svg>
                         </div>
                         <div class="text">
@@ -645,20 +977,23 @@
                                 
                                 <button class="btn-follow"> + suivre</button>
                             </div>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente nobis, dolore distinctio quisquam aspernatur perspiciatis ducimus repellat aliquam numquam vero ut atque nisi eum, laborum libero reiciendis nam quas nulla!</p>
+                            <p class="legend">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente nobis, dolore distinctio quisquam aspernatur perspiciatis ducimus repellat aliquam numquam vero ut atque nisi eum, laborum libero reiciendis nam quas nulla!</p>
                             <div class="btns">
                                 <button>
+                                    1
                                     <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-heart" viewBox="0 0 16 16">
                                         <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
                                     </svg>
                                 </button>
 
                                 <button>
+                                    1
                                     <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-chat" viewBox="0 0 16 16">
                                         <path d="M2.678 11.894a1 1 0 0 1 .287.801 11 11 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8 8 0 0 0 8 14c3.996 0 7-2.807 7-6s-3.004-6-7-6-7 2.808-7 6c0 1.468.617 2.83 1.678 3.894m-.493 3.905a22 22 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a10 10 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105"/>
                                     </svg>
                                 </button>
                                 <button>
+                                    1
                                     <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-send" viewBox="0 0 16 16">
                                         <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
                                     </svg>
@@ -666,144 +1001,11 @@
                             </div>
                             <div class="more">
                                 <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Fuga iste eum, similique impedit doloremque repudiandae sequi quisquam quidem voluptates placeat sunt adipisci commodi iure magni eligendi omnis. Neque, sequi vel.</p>
-                                <button>savoir</button>
+                                <button>En savoir +</button>
                             </div>
                         </div>
                     </div>
-
-                    <div class="content-item">
-                        <video src="" width="80%" height="90%"  muted poster=" {{ asset('images/image1.png') }}" preload="auto"></video>
-                        <div class="pause">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-play-fill" viewBox="0 0 16 16">
-                                <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
-                            </svg>
-                        </div>
-                        <div class="text">
-
-                            <div class="user">
-                                <img src=" {{ asset('images/image4.png') }}" alt="">
-                                <div class="info">
-                                    <h6>Username</h6>
-                                    <div class="date">Date</div>
-                                </div>
-                                
-                                <button class="btn-follow"> + suivre</button>
-                            </div>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente nobis, dolore distinctio quisquam aspernatur perspiciatis ducimus repellat aliquam numquam vero ut atque nisi eum, laborum libero reiciendis nam quas nulla!</p>
-                            <div class="btns">
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-heart" viewBox="0 0 16 16">
-                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                    </svg>
-                                </button>
-
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-chat" viewBox="0 0 16 16">
-                                        <path d="M2.678 11.894a1 1 0 0 1 .287.801 11 11 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8 8 0 0 0 8 14c3.996 0 7-2.807 7-6s-3.004-6-7-6-7 2.808-7 6c0 1.468.617 2.83 1.678 3.894m-.493 3.905a22 22 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a10 10 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105"/>
-                                    </svg>
-                                </button>
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-send" viewBox="0 0 16 16">
-                                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="more">
-                                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Fuga iste eum, similique impedit doloremque repudiandae sequi quisquam quidem voluptates placeat sunt adipisci commodi iure magni eligendi omnis. Neque, sequi vel.</p>
-                                <button>Savoir +</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="content-item">
-                        <video src="" width="80%" height="90%"  muted poster="{{ asset('images/image3.png') }}" preload="auto"></video>
-                        <div class="pause">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-play-fill" viewBox="0 0 16 16">
-                                <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
-                            </svg>
-                        </div>
-                        <div class="text">
-
-                            <div class="user">
-                                <img src=" {{ asset('images/image4.png') }}" alt="">
-                                <div class="info">
-                                    <h6>Username</h6>
-                                    <div class="date">Date</div>
-                                </div>
-                                
-                                <button class="btn-follow"> + suivre</button>
-                            </div>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente nobis, dolore distinctio quisquam aspernatur perspiciatis ducimus repellat aliquam numquam vero ut atque nisi eum, laborum libero reiciendis nam quas nulla!</p>
-                            <div class="btns">
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-heart" viewBox="0 0 16 16">
-                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                    </svg>
-                                </button>
-
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-chat" viewBox="0 0 16 16">
-                                        <path d="M2.678 11.894a1 1 0 0 1 .287.801 11 11 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8 8 0 0 0 8 14c3.996 0 7-2.807 7-6s-3.004-6-7-6-7 2.808-7 6c0 1.468.617 2.83 1.678 3.894m-.493 3.905a22 22 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a10 10 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105"/>
-                                    </svg>
-                                </button>
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-send" viewBox="0 0 16 16">
-                                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="more">
-                                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Fuga iste eum, similique impedit doloremque repudiandae sequi quisquam quidem voluptates placeat sunt adipisci commodi iure magni eligendi omnis. Neque, sequi vel.</p>
-                                <button>Savoir +</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="content-item">
-                        <video src="" width="80%" height="90%"  muted poster="{{ asset('images/image4.png') }}" preload="auto">
-
-                        </video>
-                        <div class="pause">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-play-fill" viewBox="0 0 16 16">
-                                <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
-                            </svg>
-                        </div>
-                        <div class="text">
-
-                            <div class="user">
-                                <img src=" {{ asset('images/image4.png') }}" alt="">
-                                <div class="info">
-                                    <h6>Username</h6>
-                                    <div class="date">Date</div>
-                                </div>
-                                
-                                <button class="btn-follow"> + suivre</button>
-                            </div>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente nobis, dolore distinctio quisquam aspernatur perspiciatis ducimus repellat aliquam numquam vero ut atque nisi eum, laborum libero reiciendis nam quas nulla!</p>
-                            <div class="btns">
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-heart" viewBox="0 0 16 16">
-                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                    </svg>
-                                </button>
-
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-chat" viewBox="0 0 16 16">
-                                        <path d="M2.678 11.894a1 1 0 0 1 .287.801 11 11 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8 8 0 0 0 8 14c3.996 0 7-2.807 7-6s-3.004-6-7-6-7 2.808-7 6c0 1.468.617 2.83 1.678 3.894m-.493 3.905a22 22 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a10 10 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105"/>
-                                    </svg>
-                                </button>
-                                <button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-send" viewBox="0 0 16 16">
-                                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="more">
-                                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Fuga iste eum, similique impedit doloremque repudiandae sequi quisquam quidem voluptates placeat sunt adipisci commodi iure magni eligendi omnis. Neque, sequi vel.</p>
-                                <button>Savoir +</button>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
 
 
                 </div>
@@ -1373,7 +1575,7 @@
 
                                 <div class="forms">
 
-                                    <form action="" id="card-payment">
+                                    <form action="" id="card-payment" class="active">
 
                                         <div class="ctn-card-name">
                                             <label for="">Nom de titulaire</label>
@@ -1718,7 +1920,7 @@
                             </svg>
                         </button>
 
-                        <button class="btn-grid-view">
+                        <button class="btn-grid-view active">
                             <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-grid" viewBox="0 0 16 16">
                                 <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5z"/>
                             </svg>
@@ -1733,6 +1935,7 @@
                     <table>
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>
                                     <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-sort-alpha-up" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd" d="M10.082 5.629 9.664 7H8.598l1.789-5.332h1.234L13.402 7h-1.12l-.419-1.371zm1.57-.785L11 2.687h-.047l-.652 2.157z"/>
@@ -1770,104 +1973,17 @@
                         </thead>
 
                         <tbody>
+
+                        @foreach($cours as  $cour)
                             <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
+                                <td>{{ $cour['id'] }}</td>
+                                <td>{{ $cour['nom'] }}</td>
+                                <td>{{ $cour['duree'] }}</td>
+                                <td>{{ $cour['Date_debut'] }}</td>
+                                <td>{{ $cour['Catégorie'] }}</td>
+                                <td>{{ $cour['nom_formateur'] }}</td>
                             </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
-                            <tr> 
-                                <td>Nom cours</td>
-                                <td>4h</td>
-                                <td>Date Début</td>
-                                <td>Catégorie</td>
-                                <td>Nom formateur</td>
-                            </tr>
+                        @endforeach
                         </tbody>
 
                         <tfoot></tfoot>
@@ -1878,27 +1994,7 @@
 
                 <div class="forma-cour-grid active">
 
-                    <div class="list-item">
-                        <div class="list-item-head">
-                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
-                                <source src="" type=""> </source>
-                            </video>
-                        </div>
-                        <div class="text">
-                            <div class="type">Bussiness</div>
-                            <div class="name">Cour name</div>
-                            <div class="jauge"> 
-                                <div class="jauge-jauge"></div> 
-                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
-                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
-                                </svg>
-                            </div>
-                            <div class="duree-user">
-                                <div class="duree">4h</div>
-                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
-                            </div>
-                        </div>
-                    </div>
+                    @foreach($cours as  $cour)
 
                     <div class="list-item">
                         <div class="list-item-head">
@@ -1907,8 +2003,9 @@
                             </video>
                         </div>
                         <div class="text">
-                            <div class="type">Bussiness</div>
-                            <div class="name">Cour name</div>
+                            <div class="id">{{ $cour['id'] }}</div>
+                            <div class="type">{{ $cour['Catégorie'] }}</div>
+                            <div class="name">{{ $cour['nom'] }}</div>
                             <div class="jauge"> 
                                 <div class="jauge-jauge"></div> 
                                 10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
@@ -1916,152 +2013,70 @@
                                 </svg>
                             </div>
                             <div class="duree-user">
-                                <div class="duree">4h</div>
-                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
+                                <div class="duree">{{ $cour['duree'] }}</div>
+                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> {{ $cour['nom_formateur'] }}</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="list-item">
-                        <div class="list-item-head">
-                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
-                                <source src="" type=""> </source>
-                            </video>
-                        </div>
-                        <div class="text">
-                            <div class="type">Bussiness</div>
-                            <div class="name">Cour name</div>
-                            <div class="jauge"> 
-                                <div class="jauge-jauge"></div> 
-                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
-                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
-                                </svg>
-                            </div>
-                            <div class="duree-user">
-                                <div class="duree">4h</div>
-                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="list-item">
-                        <div class="list-item-head">
-                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
-                                <source src="" type=""> </source>
-                            </video>
-                        </div>
-                        <div class="text">
-                            <div class="type">Bussiness</div>
-                            <div class="name">Cour name</div>
-                            <div class="jauge"> 
-                                <div class="jauge-jauge"></div> 
-                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
-                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
-                                </svg>
-                            </div>
-                            <div class="duree-user">
-                                <div class="duree">4h</div>
-                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="list-item">
-                        <div class="list-item-head">
-                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
-                                <source src="" type=""> </source>
-                            </video>
-                        </div>
-                        <div class="text">
-                            <div class="type">Bussiness</div>
-                            <div class="name">Cour name</div>
-                            <div class="jauge"> 
-                                <div class="jauge-jauge"></div> 
-                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
-                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
-                                </svg>
-                            </div>
-                            <div class="duree-user">
-                                <div class="duree">4h</div>
-                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="list-item">
-                        <div class="list-item-head">
-                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
-                                <source src="" type=""> </source>
-                            </video>
-                        </div>
-                        <div class="text">
-                            <div class="type">Bussiness</div>
-                            <div class="name">Cour name</div>
-                            <div class="jauge"> 
-                                <div class="jauge-jauge"></div> 
-                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
-                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
-                                </svg>
-                            </div>
-                            <div class="duree-user">
-                                <div class="duree">4h</div>
-                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="list-item">
-                        <div class="list-item-head">
-                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
-                                <source src="" type=""> </source>
-                            </video>
-                        </div>
-                        <div class="text">
-                            <div class="type">Bussiness</div>
-                            <div class="name">Cour name</div>
-                            <div class="jauge"> 
-                                <div class="jauge-jauge"></div> 
-                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
-                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
-                                </svg>
-                            </div>
-                            <div class="duree-user">
-                                <div class="duree">4h</div>
-                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="list-item">
-                        <div class="list-item-head">
-                            <video muted poster=" {{ asset('images/image2.png') }}" preload="auto">
-                                <source src="" type=""> </source>
-                            </video>
-                        </div>
-                        <div class="text">
-                            <div class="type">Bussiness</div>
-                            <div class="name">Cour name</div>
-                            <div class="jauge"> 
-                                <div class="jauge-jauge"></div> 
-                                10% <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-trophy" viewBox="0 0 16 16">
-                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
-                                </svg>
-                            </div>
-                            <div class="duree-user">
-                                <div class="duree">4h</div>
-                                <div class="user"><img src="{{ asset('images/image4.png') }}" alt=""> Username</div>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
 
                 </div>
 
+            </section>
+
+            <!-- Ajouter formation -->
+
+            <section id="ajout-formation">
+                <div class="ajout-forma-head">
+                    <h3>Ajouter une formation</h3>
+
+                    <button class="btn-add-forma">Ajouter une formation</button>
+                </div>
+                
+                <form action="" id="add-modules">
+                    <div class="form-ctn">
+                        <select name="user-formations" id="user-formations" class="form-control" required>
+                            <option value="">Formations</option>
+                            <option value="">Formation1</option>
+                            <option value="">Formation2</option>
+                            <option value="">Formation3</option>
+                        </select>
+
+                    <input type="file" id="video_intro" name="video_intro">
+
+                    <button class="add-intro-video">
+                        Video Intro
+                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-person-video3" viewBox="0 0 16 16">
+                                <path d="M14 9.5a2 2 0 1 1-4 0 2 2 0 0 1 4 0m-6 5.7c0 .8.8.8.8.8h6.4s.8 0 .8-.8-.8-3.2-4-3.2-4 2.4-4 3.2"/>
+                                <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h5.243c.122-.326.295-.668.526-1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v7.81c.353.23.656.496.91.783Q16 12.312 16 12V4a2 2 0 0 0-2-2z"/>
+                            </svg>
+                    </button>
+                    <button class="add-module">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                                <path d="M452-160q6 20 16.5 41.5T490-80H200q-33 0-56.5-23.5T120-160v-640q0-33 23.5-56.5T200-880h480q33 0 56.5 23.5T760-800v284q-18-2-40-2t-40 2v-284H480v280l-100-60-100 60v-280h-80v640h252ZM720-40q-83 0-141.5-58.5T520-240q0-83 58.5-141.5T720-440q83 0 141.5 58.5T920-240q0 83-58.5 141.5T720-40Zm-50-100 160-100-160-100v200ZM280-800h200-200Zm172 0H200h480-240 12Z"/>
+                            </svg>
+                    </button>
+                   </div>
+                   <button type="submit">Envoyer</button>
+                </form>
             </section>
 
 
             <!-- container the settings element -->
 
             <section id="overlay">
+                <button class="btn-overlay-retour">Retour</button>
+
+                <form action="" id="add-forma">
+                    <h2>Ajouter une nouvelle formation</h2>
+                    <select name="forma-cate" id="forma-cate">
+                        <option value="">Catégorie</option>
+                    </select>
+                    <input type="text" name="formation-name" placeholder="Nom de la formation">
+                    <button type="submit">Envoyer</button>
+                </form>
+
                 <div id="params">
 
                     <div class="param-head">
@@ -2095,27 +2110,36 @@
                                     </svg>
                                 </button>
 
-                                <form action="" method="POST">
-
-                                    <div class="ctn-input ctn-username">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-person-fill" viewBox="0 0 16 16">
-                                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-                                        </svg>
-                                        <input type="text" id="username" name="username" placeholder="Username" required>
+                                <form action="" method="POST" id="form-info-perso">
+                                    <h4>Changez les champs que vous souhaitez modifer </h4>
+                                    <div class="ctn-input">
+                                        <label for="username" class="label-username">Modifier Nom et Prenom</label>
+                                        <div class="ctn-username">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-person-fill" viewBox="0 0 16 16">
+                                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                            </svg>
+                                            <input type="text" id="username" name="username" value="{{ $user -> name}}">
+                                        </div>
                                     </div>
 
-                                    <div class="ctn-input ctn-email">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-envelope" viewBox="0 0 16 16">
-                                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
-                                        </svg>
-                                        <input type="email" id="email" name="email" placeholder="Email" required>
+                                    <div class="ctn-input" >
+                                        <label for="email" class="label-email">Modifier adresse mail</label>
+                                        <div class="ctn-email">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-envelope" viewBox="0 0 16 16">
+                                                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
+                                            </svg>
+                                            <input type="email" id="email" name="email" value=" {{ $user -> email}}">
+                                        </div>
                                     </div>
 
-                                    <div class="ctn-input ctn-password">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-lock" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4M4.5 7A1.5 1.5 0 0 0 3 8.5v5A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 11.5 7zM8 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
-                                        </svg>
-                                        <input type="password" id="password" name="passowrd" placeholder="Mot de passe" required>
+                                    <div class="ctn-input">
+                                        <label for="password" class="label-password">Nouveau mot de passe</label>
+                                        <div class="ctn-password">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-lock" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4M4.5 7A1.5 1.5 0 0 0 3 8.5v5A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 11.5 7zM8 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
+                                            </svg>
+                                            <input type="password" id="password" name="password" placeholder="Mot de passe">
+                                        </div>
                                     </div>
 
                                     <button type="submit">Envoyer</button>
@@ -2165,10 +2189,13 @@
                 <div id="del-acc-msg">
 
                     <div class="del-acc-head">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
-                            <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z"/>
-                            <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
-                        </svg>
+                        <div class="ctn-svg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                                <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z"/>
+                                <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                            </svg>
+                        </div>
+                        
                         <h3>Cette action est irréverssible. </h3>
                         <p>Cette action va supprimer votre compte, Confirmer avec votre mot de passe </p>
                     </div>
@@ -2180,7 +2207,7 @@
 
                 </div>
 
-                <!-- TO switch account  -->
+                <!-- To switch account  -->
 
                 <div id="switch-acc">
                     <div class="switch-acc-head">
@@ -2219,6 +2246,42 @@
                         </div>
                     </div>
                     <button class="switch-acc-btn-ctn">Continuer</button>
+                </div>
+
+                <div id="change-user-info">
+                    <div class="change-info-head">
+                        <h4>Cette action va changer vos inforamtion personnelles. Voulez-vous continuer?</h4>
+                    </div>
+
+                    <form action="">
+                        <div class="ctn-old-pass">
+                            <label for="actual-password">Mot de passe</label>
+                            <div class="ctn-password">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-lock" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4M4.5 7A1.5 1.5 0 0 0 3 8.5v5A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 11.5 7zM8 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
+                                </svg>
+                                <input type="password" id="actual-password" name="actual-password" placeholder="Mot de passe" required>
+                            </div>
+                        </div>
+                        <button class="btn-change-info">Continuer</button>
+                    </form>
+                    
+                </div>
+
+                <div class="loader">
+                    Veuillez patienter...
+                    <div class="spinner">
+                        <div class="vertical">
+                            <div class="top"></div>
+                            <div class="bottom"></div>
+                        </div>
+
+                        <div class="horizontal">
+                            <div class="left"></div>
+                            <div class="right"></div>
+                        </div>
+                        
+                    </div>
                 </div>
 
             </section>
