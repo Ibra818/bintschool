@@ -16,6 +16,11 @@ class userCtr extends Controller
 
         try{
 
+            Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ]) -> post('http://localhost:8001/api/register', [ 'name' => $request -> username]);
+
             if($request -> password == $request -> confirm_password){
                 
                 $user = User::create([
@@ -55,7 +60,13 @@ class userCtr extends Controller
         }
         
         Auth::login($user);
-        return response() -> json(['redirect' => route('home')]);
+
+        if(Auth::user() -> role == 'admin'){
+            return response() -> json (['redirect' => route('admin-home')]);
+        }else{
+            return response() -> json(['redirect' => route('home')]);
+        }
+
     }
 
     // Define the role of a user while his creating his account

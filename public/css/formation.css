@@ -9,6 +9,15 @@
     --sidebar: #2a2a2a;
 }
 
+body{
+    position: fixed;
+    top:0;
+    left:0;
+    scrollbar-width: none;
+    width: 100%;
+    height: 100%;
+}
+
 .formation{
     background-color: var(--sidebar);
     width: 100%;
@@ -31,6 +40,7 @@
 }
 .formation .content .video{
     position: relative;
+    overflow: hidden;
     
 }
 
@@ -40,6 +50,7 @@
     object-fit: cover;
     z-index: 1;
     border-radius: 30px;
+    
 }
 
 .formation .content .video .progression{
@@ -52,6 +63,13 @@
     position: absolute;
     bottom: 0;
     z-index: 2;
+    transform: translateY(100%);
+    transition: transform .5s ease-out;
+}
+
+.formation .content .video:hover .progression{
+    transform: translateY(0%);
+    transition: transform .5s ease-out;
 }
 
 .formation .content .video .progression button{
@@ -60,8 +78,8 @@
 }
 
 .formation .content .video .progression .duree{
-    color: black;
-    font-size: 1.4em;
+    color: white;
+    font-size: 1em;
     font-weight: 600;
     display: flex;
     justify-content: center;
@@ -79,7 +97,7 @@
 .formation .content .video .progression .progress-bar{
     width: 80%;
     height: 25%;
-    background: linear-gradient( to right, white 75%, gray 25%);
+    /* background: linear-gradient( to right, white 75%, gray 25%); */
     border-radius: 25px;
 }
 
@@ -101,12 +119,21 @@
     padding: 1% 0 1% 0;
 }
 
+
 .formation .content .formateur .info{
-    width: 40%;
+    width: 80%;
     height: 10vh;
     display: flex;
     justify-content: space-around;
     align-items: center;
+}
+
+.formation .content .formateur .info .profil{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: baseline;
+    margin: 0 0 0 2%;
 }
 
 .formation .content .formateur .visite{
@@ -114,17 +141,31 @@
     color: white;
     border-radius: 10px;
     background-color: rgba(255, 255, 255, 0.4);
-    width: 10%;
+    width: 80px;
     height: 4vh;
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 
+.formation .content .formateur .username{
+    max-height: 30%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 1.2em;
+    text-align: justify;
+}
+
+.formation .content .formateur .specialite{
+    width: 95%;
+    max-height: 45%;
+}
+
 .formation .content .formateur .visite svg{
     fill: white;
-    height: 90%;
-    width: 25%;
+    height: 80%;
+    width: 28%;
 }
 
 .formation .content .formateur .profil{
@@ -144,7 +185,11 @@
 
 .formation .content h3{
     width: 90%;
-    padding: 0 0 0 2%;
+    padding: 0 0 0 0;
+    display: flex;
+    justify-content: baseline;
+    align-items: center;
+    text-align: center;
     margin: 2% 0 5% 0;
 }
 
@@ -171,6 +216,10 @@
     border: none;
     transition: border .5s ease;
 }
+
+/* .formation .content .cours .cour:nth-child(1){
+    display: none;
+} */
 
 .formation .content .cours .cour.active .video svg{
     width: 0;

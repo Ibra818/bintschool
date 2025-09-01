@@ -4,6 +4,8 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
+        localStorage.clear();
+
         const main = document.querySelector('main');
         const registerForm = document.querySelector('.register');
         const loginForm = document.querySelector('.login');
@@ -33,16 +35,18 @@
         const goBackBtn = document.querySelector('#restore-pass .goBack-btn');
         const spanRestorePass = document.querySelector('#restore-pass p .useremail');
         const restoreText = document.querySelector('#restore-pass p');
-        
+        const apiUrl = 'http://localhost:8001/api/';
+
         window.addEventListener('resize', ()=>{
-            console.log('resized')
+            console.log('resized');
         });
+
         goBackBtn.addEventListener('click', (e)=>{
             e.preventDefault();
             loaderOverlay.classList.remove('active');
             restorePassword.classList.remove('active');
             forgottenPass.classList.remove('active');
-        })
+        });
 
         forgottenBtnConfirm.addEventListener('click', (e)=>{
             e.preventDefault();
@@ -51,8 +55,7 @@
             loaderOverlay.classList.add('active');
             loader.classList.add('active');
             $.ajax({
-                url: '/resetPassword',
-                timeout: 10000,
+                url: apiUrl + 'resetPassword',
                 headers: {
                     'X-CSRF-TOKEN' : token,
                     'Content-Type' : 'application/json',
@@ -89,28 +92,60 @@
         proBtnContinue.addEventListener('click', (e)=>{
             loaderOverlay.classList.add('active');
             loader.classList.add('active');
-            const token = "{{ csrf_token() }}";
-            console.log(token);
-
+            const email = document.querySelector('#email')?.value;
+            const password = document.querySelector('#password')?.value;
+            const confirm_password = document.querySelector('#confirm_password')?.value;
+            const name = document.querySelector('#username')?.value;
+            // const token = "{{ csrf_token() }}";
+            // console.log(token);
 
             $.ajax({
-                url: '/userRole',
-                timeout: 10000,
+                url: apiUrl +'register',
                 data: JSON.stringify({
                     'profile': teacher.classList.contains('active')? 'formateur' : 'apprenant',
+                    'name': name,
+                    'email': email,
+                    'password': password,
+                    'password_confirmation': confirm_password,
                 }),
                 type: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': token,
+                    // 'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
                 success: function(response){
-                    if(response.redirect){
-                        window.location.href = response.redirect;
+                    console.log(response);
+                    if(response.success){
+                        // Nettoyer les états précédents
+                        loaderOverlay.classList=[];
+                        loader.classList= [];
+                        error.classList= [];
+                        localStorage.setItem('user', response.user);
+                        localStorage.setItem('token', response.token);
+                        window.location.href = " {{ route('home') }}";
+                        // Afficher le succès
+                        successMsg.innerText = response.message;
+                        message.classList.add('success');
+                        success.classList.add('active');
+                        profile.classList.add('active');    
                     }
                 },
-                error: function(error){
+                error: function(erreurs){
+                    console.log(erreurs);
+                    // Nettoyer les états précédents
+                    loaderOverlay.classList=[];
+                    loader.classList= [];
+                    success.classList= [];
+                    message.classList= [];
+                    let errorMessage = 'Erreur d\'inscription';
                     
+                    errorMessage = erreurs.responseJSON.errors;
+                    console.log(errorMessage);
+                    // Afficher l'erreur
+                    errorMsg.innerText = errorMessage;
+                    message.classList.add('error');
+                    error.classList.add('active');
                 },
             })
         });
@@ -158,7 +193,8 @@
 
         restorePass.addEventListener('click', (e)=>{
             e.preventDefault();   
-            console.log('clické!');         
+            console.log('clické!');  
+            forgottenPass.classList=  [];   
             forgottenPass.classList.add('active');
         });     
 
@@ -184,8 +220,7 @@
             loader.classList.add('active');
             $.ajax({
                 type : 'POST',
-                url: "{{ route('login') }}",
-                timeout: 10000, // 10 secondes de timeout
+                url:  apiUrl + "login",
                 headers: {
                     'X-CSRF-TOKEN' : token,
                     'Content-Type' : 'application/json',
@@ -197,34 +232,43 @@
                 }),
 
                 success: function(response){
-                    if(response.redirect){
-                        loader.classList.remove('active');
-                        loaderOverlay.classList.remove('active');
-                        window.location.href = response.redirect;
-                    // // Nettoyer les états précédents
-                    // if(loaderOverlay.classList.contains('active')) loaderOverlay.classList.remove('active');
-                    // if(loader.classList.contains('active')) loader.classList.remove('active');
-                    // if(error.classList.contains('active')) error.classList.remove('active');
-                    // if(message.classList.contains('error')) message.classList.remove('error');
-                    
-                    // // Afficher le succès
-                    // successMsg.innerText = response.message;
-                    // message.classList.add('success');
-                    // success.classList.add('active');
+                    console.log('user: ',response);
+                    if(response.success){
+                        loader.classList= [];
+                        loaderOverlay.classList= [];
+                        localStorage.setItem('user', response.user);
+                        localStorage.setItem('token', response.token);
+                         if(response.user.role== 'admin' || response.user.role== 'superadmin'){
+                            window.location.href = "{{ route('admin-home') }}";
+                         }else{
+                            window.location.href = "{{ route('home') }}";
+                         }
+                        
 
-                }else{
-                    loaderOverlay.classList.remove('active');
-                    loader.classList.remove('active');
-                    success.classList.remove('active');
-                    message.classList.remove('success');
-                    
-                    let errorMessage = response.message;
-                    console.log(errorMessage);
-                    // Afficher l'erreur
-                    errorMsg.innerText = errorMessage;
-                    error.classList.add('active');
-                    message.classList.add('error');
-                }},
+                        // Nettoyer les états précédents
+                        if(loaderOverlay.classList.contains('active')) loaderOverlay.classList.remove('active');
+                        if(loader.classList.contains('active')) loader.classList.remove('active');
+                        if(error.classList.contains('active')) error.classList.remove('active');
+                        if(message.classList.contains('error')) message.classList.remove('error');
+                        
+                        // Afficher le succès
+                        successMsg.innerText = response.message;
+                        message.classList.add('success');
+                        success.classList.add('active');
+                    }else{
+                        loaderOverlay.classList.remove('active');
+                        loader.classList.remove('active');
+                        success.classList.remove('active');
+                        message.classList.remove('success');
+                        
+                        let errorMessage = response.message;
+                        console.log(errorMessage);
+                        // Afficher l'erreur
+                        errorMsg.innerText = errorMessage;
+                        error.classList.add('active');
+                        message.classList.add('error');
+                    }
+                },
                 error: function(erreur){
                     
                     // Nettoyer les états précédents
@@ -246,83 +290,12 @@
 
 
         });
-        // Soumission du formulaire de register
+        // Activateur de la page de choix de type de profile
         
         btnRegister.addEventListener('click', (e)=> {
             e.preventDefault();
 
-            // Validation côté client
-            const email = document.querySelector('#email')?.value;
-            const password = document.querySelector('#password')?.value;
-            const confirm_password = document.querySelector('#confirm_password')?.value;
-            const name = document.querySelector('#username')?.value;
-
-            const token = "{{ csrf_token() }}";
-            loaderOverlay.classList.add('active');
-            loader.classList.add('active');
-
-            $.ajax({
-                url : "{{ route('register') }}",
-                type : "POST",
-                timeout: 10000,
-                headers: {
-                    'X-CSRF-TOKEN': token,
-                    'Content-Type': 'application/json',
-                    'Accept' : 'application/json'
-                },
-                data : JSON.stringify({
-                    'email' : email,
-                    'password' : password,
-                    'confirm_password' : confirm_password,
-                    'username' : name,
-                }),
-
-                success : function(response){   
-                    if(response.status == 200){
-                    // Nettoyer les états précédents
-                    if(loaderOverlay.classList.contains('active')) loaderOverlay.classList.remove('active');
-                    if(loader.classList.contains('active')) loader.classList.remove('active');
-                    if(error.classList.contains('active')) error.classList.remove('active');
-                    // 
-                    // Afficher le succès
-                    successMsg.innerText = response.message;
-                    message.classList.add('success');
-                    success.classList.add('active');
-                    profile.classList.add('active');                    
-                        
-                }else if (response.status == 422){
-                    loaderOverlay.classList.remove('active');
-                    loader.classList.remove('active');
-                    success.classList.remove('active');
-                    message.classList.remove('success');
-                    let errorMessage = 'Erreur d\'inscription';
-                    
-                    errorMessage = response;
-                    console.log(errorMessage);
-                    // Afficher l'erreur
-                    errorMsg.innerText = errorMessage;
-                    message.classList.add('error');
-                    error.classList.add('active'); 
-                }
-                },
-                error: function(errors){
-                    console.log(error);
-                    console.log(message)
-                    // Nettoyer les états précédents
-                    loaderOverlay.classList.remove('active');
-                    loader.classList.remove('active');
-                    success.classList.remove('active');
-                    message.classList.remove('success');
-                    let errorMessage = 'Erreur d\'inscription';
-                    
-                    errorMessage = errors.responseJSON.message;
-                    console.log(errorMessage);
-                    // Afficher l'erreur
-                    errorMsg.innerText = errorMessage;
-                    message.classList.add('error');
-                    error.classList.add('active');
-                }   
-            })
+            profile.classList.add('active');
             
         });
 
@@ -350,7 +323,7 @@
                     <form action="">
                         @csrf
                         <div class="input-container">
-                            <input type="text" id="username" name="username" placeholder="Nom Complet" required>
+                            <input type="text" id="username" name="name" placeholder="Nom Complet" required>
                         </div>
                         <div class="input-container">
                             <input type="text" id="email" name="email" placeholder="Email" required>
@@ -359,7 +332,7 @@
                             <input type="password" id="password" name="password" placeholder="Mot de passe" required>
                         </div>
                         <div class="input-container">
-                            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmer le mot de passe" required>
+                            <input type="password" id="confirm_password" name="password_confirmation" placeholder="Confirmer le mot de passe" required>
                         </div>
                         <div class="btns">
                             <button class="btn-register">Creer un compte</button>

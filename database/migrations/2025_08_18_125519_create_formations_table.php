@@ -15,12 +15,18 @@ return new class extends Migration
     {
         Schema::create('formations', function (Blueprint $table) {
             $table->id();
-            $table -> string('nom');
-            $table -> integer('duree');
-            $table -> date('date_debut');
-            $table -> string('categorie');
-            $table -> string('niveau_difficulte');
-            $table -> string('nom_formateur');
+            $table->string('titre');
+            $table->text('description');
+            $table->integer('prix'); // en centimes
+            $table->integer('duree_estimee')->nullable(); // durée en minutes
+            $table->enum('niveau', ['debutant', 'intermediaire', 'avance'])->default('debutant');
+            $table->string('langue', 5)->default('fr');
+            $table->enum('statut', ['brouillon', 'publie'])->default('brouillon');
+            $table->string('image_couverture')->nullable();
+            $table->string('video_preview')->nullable();
+            $table->boolean('certificat_disponible')->default(false);
+            $table->foreignId('categorie_id')->constrained('categories')->onDelete('cascade');
+            $table->foreignId('formateur_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
 
